@@ -1,45 +1,45 @@
 // src/api/adminService.js
 
-import axios from 'axios'; // axios를 사용합니다.
+import axios from 'axios'; // axiosを使用します。
 
-// 백엔드 API의 기본 URL
+// バックエンドAPIの基本URL
 const API_BASE_URL = 'https://saboten-server.fly.dev/api/admin';
 
-// axios 인스턴스를 생성하여 공통 설정을 적용합니다.
+// axiosインスタンスを作成して共通設定を適用します。
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// TODO: 나중에 로그인 기능이 추가되면, 여기에 인터셉터를 사용하여
-// 모든 요청에 자동으로 인증 토큰을 추가할 수 있습니다.
+// TODO: 後でログイン機能が追加されたら、ここにインターセプターを使用して
+// 全てのリクエストに自動的に認証トークンを追加できます。
 // apiClient.interceptors.request.use(config => { ... });
 
 /**
- * 특정 상태의 가게 목록을 조회합니다.
- * @param {string} status - 조회할 상태 (예: 'PENDING_REVIEW', 'APPROVED'). 비어있으면 전체 조회.
- * @returns {Promise<Array>} 가게 목록 배열
+ * 特定ステータスの店舗一覧を取得します。
+ * @param {string} status - 取得するステータス (例: 'PENDING_REVIEW', 'APPROVED')。空の場合は全て取得。
+ * @returns {Promise<Array>} 店舗一覧の配列
  */
 export const getStoresByStatus = async (status = '') => {
   try {
     const response = await apiClient.get(`/stores?status=${status}`);
-    
-    // ★★★ 여기가 수정된 부분입니다. ★★★
-    // 1. response.data가 존재하는지 먼저 확인합니다.
+
+    // ★★★ ここが修正された部分です。 ★★★
+    // 1. response.dataが存在するかまず確認します。
     if (!response.data) {
       return [];
     }
 
-    // 2. response.data 안에 'data' 키가 있는지 확인합니다. (이중 포장된 경우)
+    // 2. response.dataの中に'data'キーがあるか確認します。（二重ラップの場合）
     if (response.data.data && Array.isArray(response.data.data)) {
       return response.data.data;
     }
 
-    // 3. response.data 자체가 배열인지 확인합니다. (단일 포장된 경우)
+    // 3. response.data自体が配列か確認します。（単一ラップの場合）
     if (Array.isArray(response.data)) {
       return response.data;
     }
-    
-    // 두 경우 모두 아니면, 예상치 못한 형식이므로 에러를 기록하고 빈 배열을 반환합니다.
+
+    // どちらでもない場合、予期しない形式なのでエラーを記録して空配列を返します。
     console.error("API response is not in the expected format:", response.data);
     return [];
 
@@ -50,11 +50,11 @@ export const getStoresByStatus = async (status = '') => {
 };
 
 /**
- * 특정 가게의 상태를 변경합니다 (승인/반려).
- * @param {string} storeId - 상태를 변경할 가게의 ID
- * @param {string} newStatus - 새로운 상태 ('APPROVED' 또는 'REJECTED')
- * @param {string} [comment] - 반려 시의 코멘트 (선택 사항)
- * @returns {Promise<object>} 업데이트된 가게 라이센스 정보
+ * 特定店舗のステータスを変更します（承認/拒否）。
+ * @param {string} storeId - ステータスを変更する店舗のID
+ * @param {string} newStatus - 新しいステータス ('APPROVED' または 'REJECTED')
+ * @param {string} [comment] - 拒否時のコメント（任意）
+ * @returns {Promise<object>} 更新された店舗ライセンス情報
  */
 export const updateStoreStatus = async (storeId, newStatus, comment = '') => {
   try {
@@ -63,7 +63,7 @@ export const updateStoreStatus = async (storeId, newStatus, comment = '') => {
       comment: comment,
     };
     await apiClient.patch(`/stores/${storeId}/status`, payload);
-    return true; // 성공했다는 의미로 true를 반환
+    return true; // 成功したという意味でtrueを返します
   } catch (error) {
     console.error('Error updating store status:', error);
     throw error;
@@ -71,25 +71,25 @@ export const updateStoreStatus = async (storeId, newStatus, comment = '') => {
 };
 
 /**
- * 비공개 영업 허가증 이미지에 대한 임시 접근 URL을 가져옵니다.
- * @param {string} imageKey - DB에 저장된 이미지 파일의 고유 키 (예: 'uuid.jpg')
- * @returns {Promise<string>} 5분간 유효한 이미지 URL
+ * 非公開の営業許可証画像への一時アクセスURLを取得します。
+ * @param {string} imageKey - DBに保存された画像ファイルの一意なキー (例: 'uuid.jpg')
+ * @returns {Promise<string>} 5分間有効な画像URL
  */
 export const getLicenseImageUrl = async (imageKey) => {
-  // imageKey가 비어있으면 요청을 보내지 않습니다.
+  // imageKeyが空であればリクエストを送りません。
   if (!imageKey) {
     return '';
   }
-  
+
   try {
     const response = await apiClient.get(`/license-image-url?key=${imageKey}`);
-    
-    // 백엔드는 { "data": { "url": "..." } } 또는 { "url": "..." } 형태로 응답할 수 있습니다.
+
+    // バックエンドは { "data": { "url": "..." } } または { "url": "..." } の形式で応答する可能性があります。
     const url = response.data?.data?.url || response.data?.url || '';
     return url;
   } catch (error) {
     console.error('Error fetching license image URL:', error);
-    // 에러 발생 시 빈 문자열을 반환하여 이미지가 깨지는 것을 방지합니다.
-    return ''; 
+    // エラー発生時に空文字を返して画像が壊れるのを防ぎます。
+    return '';
   }
 };

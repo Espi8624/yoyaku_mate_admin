@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { updateStoreStatus, getLicenseImageUrl } from '../api/adminService'; // API 서비스 import
+import { updateStoreStatus, getLicenseImageUrl } from '../api/adminService'; // APIサービスのimport
 
 function StoreDetailModal({ store, onClose, onUpdate }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,31 +9,31 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   useEffect(() => {
-    // 비동기 함수를 정의하고 바로 호출합니다.
+    // 非同期関数を定義してすぐに呼び出します。
     const fetchLicenseImage = async () => {
-      // store 객체와 license_image_url(파일 키)이 있는지 확인합니다.
+      // storeオブジェクトとlicense_image_url(ファイルキー)があるか確認します。
       if (store && store.license_image_url) {
         setIsImageLoading(true);
         try {
-          // adminService에 추가한 함수를 호출하여 임시 URL을 가져옵니다.
+          // adminServiceに追加した関数を呼び出して一時URLを取得します。
           const temporaryUrl = await getLicenseImageUrl(store.license_image_url);
-          setLicenseImageUrl(temporaryUrl); // 받아온 URL을 상태에 저장합니다.
+          setLicenseImageUrl(temporaryUrl); // 取得したURLをステートに保存します。
         } catch (error) {
           console.error("Failed to fetch license image URL", error);
-          // 에러 발생 시 URL을 비워둡니다.
+          // エラー発生時はURLを空にします。
           setLicenseImageUrl('');
         } finally {
           setIsImageLoading(false);
         }
       } else {
-        // 이미지 키가 없는 경우
+        // 画像キーがない場合
         setIsImageLoading(false);
         setLicenseImageUrl('');
       }
     };
 
     fetchLicenseImage();
-  }, [store]); // store prop이 변경될 때마다 이 효과를 다시 실행합니다.
+  }, [store]); // store propが変更されるたびにこの効果を再実行します。
 
 
   const handleApprove = async () => {
@@ -42,8 +42,8 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
     try {
       await updateStoreStatus(store.store_id, 'APPROVED');
       alert('承認処理が完了しました。');
-      onUpdate(); // 부모 컴포넌트에게 목록을 새로고침하라고 알림
-      onClose();  // 모달 닫기
+      onUpdate(); // 親コンポーネントにリストを更新するよう通知
+      onClose();  // モーダルを閉じる
     } catch (error) {
       alert('承認処理に失敗しました。');
     } finally {
@@ -78,7 +78,15 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
           <button onClick={onClose} className="close-button">&times;</button>
         </div>
         <div className="modal-body">
-          {/* TODO: 여기에 가게의 모든 상세 정보를 표시합니다. */}
+          {/* 申請者情報 (一番上に表示、ダークモード対応) */}
+          <div className="user-info-section" style={{ marginTop: '0', marginBottom: '16px', padding: '12px', backgroundColor: '#333', borderRadius: '4px', color: '#fff' }}>
+            <h4 style={{ marginTop: 0, marginBottom: '8px', color: '#fff' }}>申請者情報</h4>
+            <p style={{ margin: '4px 0' }}><strong>名前:</strong> {store.user_name || 'N/A'}</p>
+            <p style={{ margin: '4px 0' }}><strong>メール:</strong> {store.user_email || 'N/A'}</p>
+            <p style={{ margin: '4px 0' }}><strong>電話番号:</strong> {store.user_phone || 'N/A'}</p>
+          </div>
+
+          {/* TODO: ここに店舗の全ての詳細情報を表示します。 */}
           <p><strong>店舗名:</strong> {store.store_name}</p>
           <p><strong>住所:</strong> {store.address}</p>
           <p><strong>電話番号:</strong> {store.phone}</p>
@@ -87,17 +95,17 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
           <h4>営業許可証</h4>
           {isImageLoading ? (
             <div className="image-loading-placeholder">
-              <p>イメージを読み込み中...</p> {/* 이미지를 불러오는 중... */}
+              <p>イメージを読み込み中...</p> {/* 画像を読み込み中... */}
             </div>
           ) : licenseImageUrl ? (
-            // 이제 src에는 DB에서 직접 온 파일 키가 아닌,
-            // 우리가 API로 받아온 임시 URL(licenseImageUrl 상태)을 사용합니다s.
+            // srcにはDBから直接来たファイルキーではなく、
+            // APIで取得した一時URL(licenseImageUrlステート)を使用します。
             <img src={licenseImageUrl} alt="営業許可証" className="license-image" />
           ) : (
             <p>画像がありません。</p>
           )}
 
-          {/* 반려 시에만 이유 입력란을 보여줍니다. */}
+          {/* 拒否時のみ理由入力欄を表示します。 */}
           {store.verification_status === 'PENDING_REVIEW' && (
             <div className="rejection-section">
               <h4>拒否理由 (必須)</h4>
