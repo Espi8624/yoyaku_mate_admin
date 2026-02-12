@@ -3,7 +3,7 @@
 import axios from 'axios'; // axiosを使用します。
 
 // バックエンドAPIの基本URL
-const API_BASE_URL = 'https://saboten-server.fly.dev/api/admin';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // axiosインスタンスを作成して共通設定を適用します。
 const apiClient = axios.create({
