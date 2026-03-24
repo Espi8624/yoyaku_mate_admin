@@ -1,25 +1,31 @@
 // src/api/adminService.js
 
-import axios from 'axios'; // axiosを使用します。
+import axios from 'axios';
 
-// バックエンドAPIの基本URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// 環境ごとのAPIベースURL
+// ローカル開発時はViteプロキシ経由でCORSを回避する
+const isDev = import.meta.env.DEV;
 
-// axiosインスタンスを作成して共通設定を適用します。
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-});
+export const ENV_URLS = {
+  dev: isDev ? '/proxy-dev' : 'https://rusui-dev.fly.dev/api/admin',
+  prod: isDev ? '/proxy-prod' : 'https://rusui-prod.fly.dev/api/admin',
+};
 
-// TODO: 後でログイン機能が追加されたら、ここにインターセプターを使用して
-// 全てのリクエストに自動的に認証トークンを追加できます。
-// apiClient.interceptors.request.use(config => { ... });
+// 環境に応じたaxiosインスタンスを生成する関数
+const createApiClient = (environment) => {
+  return axios.create({
+    baseURL: ENV_URLS[environment] || ENV_URLS.dev,
+  });
+};
 
 /**
  * 特定ステータスの店舗一覧を取得します。
  * @param {string} status - 取得するステータス (例: 'PENDING_REVIEW', 'APPROVED')。空の場合は全て取得。
+ * @param {string} environment - 使用する環境 ('dev' または 'prod')
  * @returns {Promise<Array>} 店舗一覧の配列
  */
-export const getStoresByStatus = async (status = '') => {
+export const getStoresByStatus = async (status = '', environment = 'dev') => {
+  const apiClient = createApiClient(environment);
   try {
     const response = await apiClient.get(`/stores?status=${status}`);
 
@@ -54,16 +60,18 @@ export const getStoresByStatus = async (status = '') => {
  * @param {string} storeId - ステータスを変更する店舗のID
  * @param {string} newStatus - 新しいステータス ('APPROVED' または 'REJECTED')
  * @param {string} [comment] - 拒否時のコメント（任意）
+ * @param {string} environment - 使用する環境 ('dev' または 'prod')
  * @returns {Promise<object>} 更新された店舗ライセンス情報
  */
-export const updateStoreStatus = async (storeId, newStatus, comment = '') => {
+export const updateStoreStatus = async (storeId, newStatus, comment = '', environment = 'dev') => {
+  const apiClient = createApiClient(environment);
   try {
     const payload = {
       status: newStatus,
       comment: comment,
     };
     await apiClient.patch(`/stores/${storeId}/status`, payload);
-    return true; // 成功したという意味でtrueを返します
+    return true;
   } catch (error) {
     console.error('Error updating store status:', error);
     throw error;
@@ -73,23 +81,20 @@ export const updateStoreStatus = async (storeId, newStatus, comment = '') => {
 /**
  * 非公開の営業許可証画像への一時アクセスURLを取得します。
  * @param {string} imageKey - DBに保存された画像ファイルの一意なキー (例: 'uuid.jpg')
+ * @param {string} environment - 使用する環境 ('dev' または 'prod')
  * @returns {Promise<string>} 5分間有効な画像URL
  */
-export const getLicenseImageUrl = async (imageKey) => {
-  // imageKeyが空であればリクエストを送りません。
+export const getLicenseImageUrl = async (imageKey, environment = 'dev') => {
   if (!imageKey) {
     return '';
   }
-
+  const apiClient = createApiClient(environment);
   try {
     const response = await apiClient.get(`/license-image-url?key=${imageKey}`);
-
-    // バックエンドは { "data": { "url": "..." } } または { "url": "..." } の形式で応答する可能性があります。
     const url = response.data?.data?.url || response.data?.url || '';
     return url;
   } catch (error) {
     console.error('Error fetching license image URL:', error);
-    // エラー発生時に空文字を返して画像が壊れるのを防ぎます。
     return '';
   }
 };

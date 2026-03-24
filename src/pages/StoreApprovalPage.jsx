@@ -1,44 +1,57 @@
 // src/pages/StoreApprovalPage.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { getStoresByStatus } from '../api/adminService'; // 実際のAPIサービスのimport
-import StoreDetailModal from '../components/StoreDetailModal'; // モーダルのimport
+import { getStoresByStatus, ENV_URLS } from '../api/adminService';
+import StoreDetailModal from '../components/StoreDetailModal';
+
+// 環境ごとの設定
+const ENVIRONMENTS = [
+  { key: 'dev', label: '開発 (Dev)', color: '#f39c12', description: ENV_URLS.dev },
+  { key: 'prod', label: '本番 (Prod)', color: '#e74c3c', description: ENV_URLS.prod },
+];
 
 function StoreApprovalPage() {
   const [stores, setStores] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // ★★★ 1. タブの状態管理 (デフォルト: PENDING_REVIEW) ★★★
+  // 環境タブ (dev / prod)
+  const [activeEnv, setActiveEnv] = useState('dev');
+
+  // ステータスタブ (PENDING_REVIEW / APPROVED / REJECTED)
   const [activeTab, setActiveTab] = useState('PENDING_REVIEW');
+
   const [selectedStore, setSelectedStore] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // ★★★ 2. データ読み込みロジックをタブの状態に応じて変更 ★★★
   const fetchStores = useCallback(async () => {
     setIsLoading(true);
     setError('');
     try {
-      console.log(`Fetching stores with status: ${activeTab}...`);
-
-      const stores = await getStoresByStatus(activeTab);
-
-      console.log("API Response:", stores);
-
-      setStores(stores);
+      const data = await getStoresByStatus(activeTab, activeEnv);
+      setStores(data);
     } catch (err) {
-      console.error("Failed to fetch stores:", err);
+      console.error('Failed to fetch stores:', err);
       setError('データの読み込みに失敗しました。');
     } finally {
       setIsLoading(false);
     }
-  }, [activeTab]); // activeTabが変更されるたびに関数を再生成
+  }, [activeTab, activeEnv]);
 
   useEffect(() => {
     fetchStores();
   }, [fetchStores]);
 
-  // ★★★ 3. モーダルを開閉する関数 ★★★
+  // 環境変更時: ステータスタブをリセット
+  const handleEnvChange = (envKey) => {
+    setActiveEnv(envKey);
+    setActiveTab('PENDING_REVIEW');
+  };
+
+  const handleTabChange = (status) => {
+    setActiveTab(status);
+  };
+
   const handleOpenModal = (store) => {
     setSelectedStore(store);
     setIsModalOpen(true);
@@ -49,111 +62,110 @@ function StoreApprovalPage() {
     setSelectedStore(null);
   };
 
-  // ★★★ 4. 承認/拒否処理後にリストを更新する関数 ★★★
   const handleUpdate = () => {
-    // リストを再読み込みします。
     fetchStores();
   };
 
-  // タブ変更ハンドラー
-  const handleTabChange = (status) => {
-    setActiveTab(status);
-  };
-
-  if (isLoading) return <div>読み込み中...</div>;
-  if (error) return <div style={{ color: 'red' }}>{error}</div>;
+  const currentEnv = ENVIRONMENTS.find((e) => e.key === activeEnv);
 
   return (
     <div style={{ padding: '24px' }}>
-      <h1>店舗承認管理</h1>
+      <h1 style={{ marginBottom: '24px' }}>店舗承認管理</h1>
 
-      {/* タブナビゲーション */}
-      <div className="tabs" style={{ marginBottom: '20px', borderBottom: '1px solid #ddd' }}>
-        <button
-          onClick={() => handleTabChange('PENDING_REVIEW')}
-          style={{
-            padding: '10px 20px',
-            marginRight: '5px',
-            border: 'none',
-            borderBottom: activeTab === 'PENDING_REVIEW' ? '2px solid #007bff' : 'none',
-            backgroundColor: 'transparent',
-            fontWeight: activeTab === 'PENDING_REVIEW' ? 'bold' : 'normal',
-            cursor: 'pointer'
-          }}
-        >
-          申請中
-        </button>
-        <button
-          onClick={() => handleTabChange('APPROVED')}
-          style={{
-            padding: '10px 20px',
-            marginRight: '5px',
-            border: 'none',
-            borderBottom: activeTab === 'APPROVED' ? '2px solid #28a745' : 'none',
-            backgroundColor: 'transparent',
-            fontWeight: activeTab === 'APPROVED' ? 'bold' : 'normal',
-            cursor: 'pointer'
-          }}
-        >
-          承認済み
-        </button>
-        <button
-          onClick={() => handleTabChange('REJECTED')}
-          style={{
-            padding: '10px 20px',
-            border: 'none',
-            borderBottom: activeTab === 'REJECTED' ? '2px solid #dc3545' : 'none',
-            backgroundColor: 'transparent',
-            fontWeight: activeTab === 'REJECTED' ? 'bold' : 'normal',
-            cursor: 'pointer'
-          }}
-        >
-          拒否済み
-        </button>
+      {/* ===== 環境切り替えタブ ===== */}
+      <div className="env-tab-bar">
+        {ENVIRONMENTS.map((env) => (
+          <button
+            key={env.key}
+            className={`env-tab-btn ${activeEnv === env.key ? 'env-tab-active' : ''}`}
+            style={{ '--env-color': env.color }}
+            onClick={() => handleEnvChange(env.key)}
+          >
+            <span className="env-tab-dot" />
+            {env.label}
+          </button>
+        ))}
+        <span className="env-url-badge">{currentEnv?.description}</span>
       </div>
 
-      <p>現在、{stores.length}件の
-        {activeTab === 'PENDING_REVIEW' ? '承認待ちの申請' :
-          activeTab === 'APPROVED' ? '承認済みの店舗' : '拒否された申請'}
-        があります。</p>
+      {/* ===== ステータスタブ ===== */}
+      <div className="tabs" style={{ marginBottom: '20px', borderBottom: '1px solid #ddd' }}>
+        {[
+          { status: 'PENDING_REVIEW', label: '申請中', color: '#007bff' },
+          { status: 'APPROVED', label: '承認済み', color: '#28a745' },
+          { status: 'REJECTED', label: '拒否済み', color: '#dc3545' },
+        ].map(({ status, label, color }) => (
+          <button
+            key={status}
+            onClick={() => handleTabChange(status)}
+            style={{
+              padding: '10px 20px',
+              marginRight: '5px',
+              border: 'none',
+              borderBottom: activeTab === status ? `2px solid ${color}` : 'none',
+              backgroundColor: 'transparent',
+              fontWeight: activeTab === status ? 'bold' : 'normal',
+              cursor: 'pointer',
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
-      <table className="approval-table">
-        <thead>
-          <tr>
-            <th>店舗名</th>
-            <th>申請日</th>
-            <th>アクション</th>
-          </tr>
-        </thead>
-        <tbody>
-          {stores.length > 0 ? (
-            stores.map(store => (
-              <tr key={store.store_id}>
-                <td>{store.store_name}</td>
-                <td>{new Date(store.created_at).toLocaleString('ja-JP')}</td>
-                <td>
-                  <button onClick={() => handleOpenModal(store)}>
-                    詳細表示・処理
-                  </button>
-                </td>
+      {isLoading ? (
+        <div>読み込み中...</div>
+      ) : error ? (
+        <div style={{ color: 'red' }}>{error}</div>
+      ) : (
+        <>
+          <p>
+            現在、{stores.length}件の
+            {activeTab === 'PENDING_REVIEW'
+              ? '承認待ちの申請'
+              : activeTab === 'APPROVED'
+              ? '承認済みの店舗'
+              : '拒否された申請'}
+            があります。
+          </p>
+
+          <table className="approval-table">
+            <thead>
+              <tr>
+                <th>店舗名</th>
+                <th>申請日</th>
+                <th>アクション</th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="3" style={{ textAlign: 'center', padding: '32px' }}>
-                データがありません。
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {stores.length > 0 ? (
+                stores.map((store) => (
+                  <tr key={store.store_id}>
+                    <td>{store.store_name}</td>
+                    <td>{new Date(store.created_at).toLocaleString('ja-JP')}</td>
+                    <td>
+                      <button onClick={() => handleOpenModal(store)}>詳細表示・処理</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" style={{ textAlign: 'center', padding: '32px' }}>
+                    データがありません。
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </>
+      )}
 
-      {/* ★★★ 6. isModalOpenがtrueの時のみモーダルをレンダリングします。 ★★★ */}
       {isModalOpen && selectedStore && (
         <StoreDetailModal
           store={selectedStore}
           onClose={handleCloseModal}
           onUpdate={handleUpdate}
+          environment={activeEnv}
         />
       )}
     </div>
