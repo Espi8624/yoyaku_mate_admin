@@ -7,8 +7,8 @@ import axios from 'axios';
 const isDev = import.meta.env.DEV;
 
 export const ENV_URLS = {
-  dev: isDev ? '/proxy-dev' : 'https://rusui-dev.fly.dev/api/admin',
-  prod: isDev ? '/proxy-prod' : 'https://rusui-prod.fly.dev/api/admin',
+  dev: isDev ? '/proxy-dev' : `${import.meta.env.VITE_PROXY_DEV_TARGET}/api/admin`,
+  prod: isDev ? '/proxy-prod' : `${import.meta.env.VITE_PROXY_PROD_TARGET}/api/admin`,
 };
 
 // 環境に応じたaxiosインスタンスを生成する関数
