@@ -1,70 +1,70 @@
-# 👑 Yoyaku Mate - 統合管理者プラットフォーム（Admin Web）
+# Rusui - 統合管理者プラットフォーム（Admin Web）
 
-> **Yoyaku Mate** 統合管理プラットフォームは、サービス全体を統括する本部管理者向けの **Web バックオフィス**プロジェクトです。サービスへの出店を申請したパートナー店舗の申請書類を審査し、出店の承認・否認などの店舗ライセンス管理および統合プラットフォームの運営を担当します。
+プラットフォーム全体のサービスをモニタリングし、パートナー店舗のライセンス申請を審査・管理する**Rusui**本社管理者向けバックオフィスWebクライアント
 
----
+## Problem
+* **店舗の入店申請審査の非効率性:** 新規登録を申請したパートナー店舗が登録した事業者登録証や関連書類を確認し、承認/却下処理を調整するための一元化されたインターフェースが存在しないため、バックオフィスの運用工数が増加します。
+* **柔軟性に欠ける画面構成とコンポーネントの断片化:** 様々な解像度のデスクトップ環境において、多数の申請店舗情報を一目でモニタリングすることが難しく、コンポーネントの再利用性が低いため、管理機能を追加するたびにコードが肥大化します。
 
-## 🛠 Tech Stack（技術スタック）
+## Solution
+* **Material UI (MUI) v7ベースのレスポンシブダッシュボード:** 管理者環境に最適化された柔軟なグリッドシステムとカスタムテーマを設計し、多様な画面サイズでも入店申請店舗リストと承認待ちステータスをリアルタイムにモニタリングできるよう実装しました。
+* **モーダルベースの審査ワンクリックワークフロー:** 複雑な画面遷移なしに、ダッシュボードのテーブル内で個別店舗をクリックするだけで、申請の詳細情報や事業者登録証画像を即座にポップアップ（`StoreDetailModal`）形式で閲覧し、その場で承認/却下を確定できるUI構造を設計しました。
 
-- **Frontend Core:** React 19、React Router DOM 7
-- **Build Tool:** Vite 7（高速 HMR および最適化されたビルドパフォーマンスを提供）
-- **UI Framework:** Material UI (MUI) v7 / Emotion
-- **HTTP Client:** Axios（API 非同期通信）
-- **Deployment:** Vercel / Fly.io
+## Tech Stack
+* **Frontend Core:** React 19, React Router DOM 7
+* **Build Tool:** Vite 7
+* **UI Framework:** Material UI (MUI) v7, Emotion
+* **HTTP Client:** Axios
+* **Deployment:** Vercel
 
----
-
-## ✨ Key Features（主要機能）
-
-- **出店申請店舗の審査（Approval System）：** 新規登録を申請した店舗の一覧を確認し、承認・否認の処理を行います。
-- **店舗詳細情報モーダル：** 出店申請店舗の詳細情報（代表者情報・営業カテゴリ等）を詳しく参照できます。
-- **リアルタイムデータバインディング：** バックエンド API との連携を通じ、処理ステータスをリアルタイムでダッシュボードに反映します。
-
----
-
-## 📂 Project Structure（フォルダ構成）
-
+## Architecture
+### 1. フォルダ構成
 ```bash
 src/
-├── api/                  # API クライアントおよび通信ロジックの定義
-├── assets/               # ロゴ・画像等の静的アセット
-├── components/           # 共通再利用コンポーネント（例：StoreDetailModal）
-├── hooks/                # 状態およびビジネスロジック処理のカスタムフック
-├── pages/                # ページコンポーネント（例：StoreApprovalPage）
-├── styles/               # グローバルスタイルシートおよび MUI カスタムテーマ
-├── App.jsx               # ルーター設定とメインアプリ構造
-└── main.jsx              # アプリのエントリーポイント
+├── api/                  # Axiosインスタンスおよびバックエンド管理者APIバインディング
+├── assets/               # 本社ブランディングロゴおよび固定画像アセット
+├── components/           # 再利用性の高い多目的共通コンポーネント（例：StoreDetailModal）
+├── hooks/                # 非同期データ通信状態を隔離するためのカスタムフック
+├── pages/                # ルーター分岐別のメイン画面コンポーネント（例：StoreApprovalPage）
+├── styles/               # MUIカスタムグローバルテーマおよびスタイル設定
+├── App.css               # ルートコンポーネントのスタイルシート
+├── index.css             # グローバルな基本ブラウザスタイルシート
+├── App.jsx               # ルーティング設定および全体のレイアウト構成
+└── main.jsx              # アプリケーション開始点（Entry Point）
 ```
 
----
+### 2. データフローアーキテクチャ
+管理者Webは、バックエンドのコアAPIおよびクラウドストレージと連携して以下のように通信します。
+```mermaid
+graph TD
+    Admin["Admin UI (React)"] -->|"Trigger Actions"| Hooks["Custom Hooks (e.g. useStoreApproval)"]
+    Hooks -->|"HTTP Request"| API["Axios Client"]
+    API -->|"Verify JWT / Manage"| Server["Backend Admin API (/api/admin)"]
+    Server -->|"Load License Document"| R2["Cloudflare R2 Storage"]
+    Server -->|"Update Status"| MongoDB["MongoDB Atlas"]
+```
 
-## 🚀 Getting Started（セットアップガイド）
+## Lessons Learned
+* **MUI Custom Theme構築によるデザイン一貫性の確保:** MUI v7テーマシステムをカスタムチューニングし、本社ブランドカラー（`AppColors`）とタイポグラフィ規則をグローバルコンポーネントに注入することで、新規管理コンポーネントの開発スピードを短縮しました。
+* **カスタムフック（Custom Hooks）ベースのAPI通信モジュール化:** ビジネスデータを取得し処理ステータスを操作するAxios通信ブロックをReact Custom Hooksとして抽象化し、コンポーネントのビュー（View）役割とビジネスロジック（Controller）役割を安全に分離しました。
+* **Vite 7を活用したビルドパイプラインの最適化:** 超高速ローカルHMRとVite 7ビルド最適化ルールを導入し、バンドルサイズを最小化してVercel環境における静的Webビルドの安定性を極大化しました。
+
+## Getting Started（セットアップガイド）
 
 ### 1. 環境変数の設定
-
-ローカル開発環境を構築するため、プロジェクトルートディレクトリに `.env.development` ファイルを作成します。
+ローカル開発環境の構成のため、プロジェクトルートディレクトリに `.env.development` ファイルを作成します。
 
 ```env
-# 管理者 API バックエンドサーバーアドレス
-VITE_PROXY_DEV_TARGET=http://localhost:8080
-VITE_PROXY_PROD_TARGET=https://YOUR_BACKEND_DOMAIN
+# 管理者APIバックエンドサーバーのアドレス
+VITE_API_BASE_URL=YOUR_BACKEND_ADMIN_API_URL
 ```
 
 ### 2. パッケージのインストールと起動
-
 ```bash
 # 依存パッケージのインストール
 npm install
 
-# ローカル開発サーバーの起動（Vite）
+# ローカル開発サーバーの起動 (Vite)
 npm run dev
 ```
-
-起動が完了したら、ターミナルに表示されるアドレス（デフォルト：`http://localhost:5173`）からブラウザでアクセスしてください。
-
----
-
-## 🔒 Security & Deployment（デプロイおよびセキュリティ）
-
-- **デプロイ：** Vercel 等を用いた静的 Web ホスティング環境を推奨します。
-- **認証および認可：** 許可された本部管理者のみがアクセスできるよう、バックエンド API エンドポイントにセキュリティフィルターが適用されています。
+起動が完了すると、ターミナルに表示されるアドレス（デフォルト値：`http://localhost:5173`）からブラウザでアクセスできます。
