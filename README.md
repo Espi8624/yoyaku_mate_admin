@@ -17,23 +17,36 @@
 
 ```bash
 npm install
-npm run dev
+
+# 開発環境 (Development) 起動 - ローカルバックエンド連動
+npm run dev:dev
+
+# 本番環境 (Production) 起動 - 本番バックエンド連動
+npm run dev:prod
 ```
 
 ブラウザから `http://localhost:5173` へアクセスします。
 
 ### 環境変数
 
-```env
-VITE_PROXY_DEV_TARGET=http://localhost:8080
-VITE_PROXY_PROD_TARGET=https://your-production-server.fly.dev
-```
+プロジェクトルートフォルダの環境変数ファイル(`.env.development` および `.env.production`)を通じて起動モード別のAPI接続先を管理します。
+
+* **.env.development** (開発環境)
+  ```env
+  VITE_API_BASE_URL=http://localhost:8080/api/admin
+  VITE_PROXY_TARGET=http://localhost:8080
+  ```
+* **.env.production** (本番環境)
+  ```env
+  VITE_API_BASE_URL=https://rusui-prod.fly.dev/api/admin
+  VITE_PROXY_TARGET=https://rusui-prod.fly.dev
+  ```
 
 ## Architecture
 
 ```
 src/
-├── api/            → 管理者用API呼び出し定義 (環境別のAxiosインスタンス)
+├── api/            → 管理者用API呼び出し定義 (起動環境に応じたAxiosインスタンス)
 ├── pages/          → メイン画面 (StoreApprovalPage)
 ├── components/     → 共通コンポーネント (StoreDetailModal)
 ├── hooks/          → 非同期通信の状態をカプセル化したカスタムフック

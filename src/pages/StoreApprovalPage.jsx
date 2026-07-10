@@ -1,22 +1,13 @@
 // src/pages/StoreApprovalPage.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { getStoresByStatus, ENV_URLS } from '../api/adminService';
+import { getStoresByStatus } from '../api/adminService';
 import StoreDetailModal from '../components/StoreDetailModal';
-
-// 環境ごとの設定
-const ENVIRONMENTS = [
-  { key: 'dev', label: '開発 (Dev)', color: '#f39c12', description: ENV_URLS.dev },
-  { key: 'prod', label: '本番 (Prod)', color: '#e74c3c', description: ENV_URLS.prod },
-];
 
 function StoreApprovalPage() {
   const [stores, setStores] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-
-  // 環境タブ (dev / prod)
-  const [activeEnv, setActiveEnv] = useState('dev');
 
   // ステータスタブ (PENDING_REVIEW / APPROVED / REJECTED)
   const [activeTab, setActiveTab] = useState('PENDING_REVIEW');
@@ -28,7 +19,7 @@ function StoreApprovalPage() {
     setIsLoading(true);
     setError('');
     try {
-      const data = await getStoresByStatus(activeTab, activeEnv);
+      const data = await getStoresByStatus(activeTab);
       setStores(data);
     } catch (err) {
       console.error('Failed to fetch stores:', err);
@@ -36,17 +27,11 @@ function StoreApprovalPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [activeTab, activeEnv]);
+  }, [activeTab]);
 
   useEffect(() => {
     fetchStores();
   }, [fetchStores]);
-
-  // 環境変更時: ステータスタブをリセット
-  const handleEnvChange = (envKey) => {
-    setActiveEnv(envKey);
-    setActiveTab('PENDING_REVIEW');
-  };
 
   const handleTabChange = (status) => {
     setActiveTab(status);
@@ -66,27 +51,9 @@ function StoreApprovalPage() {
     fetchStores();
   };
 
-  const currentEnv = ENVIRONMENTS.find((e) => e.key === activeEnv);
-
   return (
     <div style={{ padding: '24px' }}>
       <h1 style={{ marginBottom: '24px' }}>店舗承認管理</h1>
-
-      {/* ===== 環境切り替えタブ ===== */}
-      <div className="env-tab-bar">
-        {ENVIRONMENTS.map((env) => (
-          <button
-            key={env.key}
-            className={`env-tab-btn ${activeEnv === env.key ? 'env-tab-active' : ''}`}
-            style={{ '--env-color': env.color }}
-            onClick={() => handleEnvChange(env.key)}
-          >
-            <span className="env-tab-dot" />
-            {env.label}
-          </button>
-        ))}
-        <span className="env-url-badge">{currentEnv?.description}</span>
-      </div>
 
       {/* ===== ステータスタブ ===== */}
       <div className="tabs" style={{ marginBottom: '20px', borderBottom: '1px solid #ddd' }}>
@@ -165,7 +132,6 @@ function StoreApprovalPage() {
           store={selectedStore}
           onClose={handleCloseModal}
           onUpdate={handleUpdate}
-          environment={activeEnv}
         />
       )}
     </div>

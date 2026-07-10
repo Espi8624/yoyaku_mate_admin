@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { updateStoreStatus, getLicenseImageUrl } from '../api/adminService'; // APIサービスのimport
 
-function StoreDetailModal({ store, onClose, onUpdate, environment = 'dev' }) {
+function StoreDetailModal({ store, onClose, onUpdate }) {
   const [isLoading, setIsLoading] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
 
@@ -16,7 +16,7 @@ function StoreDetailModal({ store, onClose, onUpdate, environment = 'dev' }) {
         setIsImageLoading(true);
         try {
           // adminServiceに追加した関数を呼び出して一時URLを取得します。
-          const temporaryUrl = await getLicenseImageUrl(store.license_image_url, environment);
+          const temporaryUrl = await getLicenseImageUrl(store.license_image_url);
           setLicenseImageUrl(temporaryUrl); // 取得したURLをステートに保存します。
         } catch (error) {
           console.error("Failed to fetch license image URL", error);
@@ -40,7 +40,7 @@ function StoreDetailModal({ store, onClose, onUpdate, environment = 'dev' }) {
     if (!window.confirm(`${store.store_name}を承認しますか？`)) return;
     setIsLoading(true);
     try {
-      await updateStoreStatus(store.store_id, 'APPROVED', '', environment);
+      await updateStoreStatus(store.store_id, 'APPROVED', '');
       alert('承認処理が完了しました。');
       onUpdate(); // 親コンポーネントにリストを更新するよう通知
       onClose();  // モーダルを閉じる
@@ -59,7 +59,7 @@ function StoreDetailModal({ store, onClose, onUpdate, environment = 'dev' }) {
     if (!window.confirm(`${store.store_name}を拒否しますか？`)) return;
     setIsLoading(true);
     try {
-      await updateStoreStatus(store.store_id, 'REJECTED', rejectReason, environment);
+      await updateStoreStatus(store.store_id, 'REJECTED', rejectReason);
       alert('拒否処理が完了しました。');
       onUpdate();
       onClose();
