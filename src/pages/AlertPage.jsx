@@ -13,7 +13,7 @@ function AlertPage() {
         </Typography>
       </Box>
       <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
-        서버 응답 지연, 에러 급증 등의 장애 발생 시 슬랙/이메일 알림 임계치 조건을 설정합니다.
+        サーバーの応答遅延、エラー急増などの障害発生時に、Slack/メール通知の閾値条件を設定します。
       </Typography>
       
       <Grid container spacing={3}>
@@ -24,10 +24,10 @@ function AlertPage() {
                 Slack Alarm Webhook
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted, mb: 3 }}>
-                현재 슬랙 채널 `#alert-rusui-monitoring` 에 에러 트리거 연동이 완료되어 있습니다.
+                現在、Slackチャンネル「#alert-rusui-monitoring」へのエラートリガー連携が完了しています。
               </Typography>
               <Button variant="contained" color="error" size="small">
-                테스트 발송
+                テスト送信
               </Button>
             </CardContent>
           </Card>
@@ -36,19 +36,19 @@ function AlertPage() {
           <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                임계치 설정 (Thresholds)
+                閾値設定 (Thresholds)
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textSecondary, mb: 1 }}>
-                • 에러 비율 &gt; 1% (5분 평균)
+                • エラー率 &gt; 1% (5分平均)
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textSecondary, mb: 1 }}>
-                • API 레이턴시 &gt; 500ms (5분 평균)
+                • APIレイテンシ &gt; 500ms (5分平均)
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textSecondary, mb: 3 }}>
-                • CPU 사용량 &gt; 90% (1분 연속)
+                • CPU使用率 &gt; 90% (1分連続)
               </Typography>
               <Button variant="outlined" color="inherit" size="small" sx={{ borderColor: COLORS.border, color: COLORS.textPrimary, '&:hover': { borderColor: COLORS.borderLight } }}>
-                설정 변경
+                設定変更
               </Button>
             </CardContent>
           </Card>

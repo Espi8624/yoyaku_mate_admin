@@ -13,7 +13,7 @@ function RequestCountPage() {
         </Typography>
       </Box>
       <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
-        서버 유입 트래픽 및 API 호출 요청 횟수를 분석하는 실시간 모니터링 페이지입니다.
+        サーバーへの流入トラフィックおよびAPIリクエスト回数を分析するリアルタイム監視ページです。
       </Typography>
       
       <Grid container spacing={3}>
@@ -27,7 +27,7 @@ function RequestCountPage() {
                 1,245,892
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                지난 24시간 동안 유입된 총 요청 수
+                過去24時間に流入した総リクエスト数
               </Typography>
             </CardContent>
           </Card>
@@ -42,7 +42,7 @@ function RequestCountPage() {
                 99.98%
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                성공적으로 처리된 응답 비율 (Status 2xx/3xx)
+                正常に処理された応答の割合 (Status 2xx/3xx)
               </Typography>
             </CardContent>
           </Card>
@@ -57,7 +57,7 @@ function RequestCountPage() {
                 450 <span style={{ fontSize: '1.2rem', fontWeight: 'normal' }}>Req/Sec</span>
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                최근 1시간 내 최대 초당 처리 트래픽
+                直近1時間における最大秒間リクエスト数(TPS)
               </Typography>
             </CardContent>
           </Card>

@@ -13,7 +13,7 @@ function ResponseTimePage() {
         </Typography>
       </Box>
       <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
-        실시간 API 레이턴시 및 엔드포인트 응답 속도 성능 지표입니다.
+        リアルタイムのAPIレイテンシおよびエンドポイント応答速度のパフォーマンス指標です。
       </Typography>
       
       <Grid container spacing={3}>
@@ -27,7 +27,7 @@ function ResponseTimePage() {
                 45 <span style={{ fontSize: '1.2rem', fontWeight: 'normal' }}>ms</span>
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                최근 5분간 처리된 API 평균 응답 속도
+                直近5分間に処理されたAPIの平均応答時間
               </Typography>
             </CardContent>
           </Card>
@@ -42,7 +42,7 @@ function ResponseTimePage() {
                 180 <span style={{ fontSize: '1.2rem', fontWeight: 'normal' }}>ms</span>
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                상위 1% 요청의 최대 레이턴시 범위
+                上位1%リクエストにおける最大レイテンシの範囲
               </Typography>
             </CardContent>
           </Card>
@@ -57,7 +57,7 @@ function ResponseTimePage() {
                 GET /api/admin/stores
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted, mt: 1.5 }}>
-                최근 가장 오랜 응답 시간을 소요한 엔드포인트
+                直近で最も応答時間を要したエンドポイント
               </Typography>
             </CardContent>
           </Card>

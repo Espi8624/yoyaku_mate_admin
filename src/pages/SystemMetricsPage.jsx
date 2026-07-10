@@ -13,7 +13,7 @@ function SystemMetricsPage() {
         </Typography>
       </Box>
       <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
-        서버(fly.io 인스턴스)의 실시간 하드웨어 리소스 사용 상태 지표를 보여줍니다.
+        サーバー（fly.io インスタンス）のリアルタイムハードウェアリソース使用状況を示します。
       </Typography>
       
       <Grid container spacing={3}>

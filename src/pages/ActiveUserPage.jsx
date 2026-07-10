@@ -13,7 +13,7 @@ function ActiveUserPage() {
         </Typography>
       </Box>
       <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
-        현재 플랫폼에 접속하여 동시 통신 중인 활성 사용자 지표입니다.
+        現在プラットフォームに接続し、同時通信を行っているアクティブユーザーの指標です。
       </Typography>
       
       <Grid container spacing={3}>
@@ -27,7 +27,7 @@ function ActiveUserPage() {
                 1,428
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                실시간 동시 접속 중인 유저 수 (웹/모바일 전체)
+                リアルタイムで同時接続中のユーザー数 (ウェブ/モバイル全体)
               </Typography>
             </CardContent>
           </Card>
@@ -42,7 +42,7 @@ function ActiveUserPage() {
                 42,890
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                오늘 하루 동안 서비스를 이용한 순수 유저 수
+                本日サービスを利用したユニークユーザー数
               </Typography>
             </CardContent>
           </Card>
@@ -57,7 +57,7 @@ function ActiveUserPage() {
                 512,400
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                최근 30일 기준 활성 사용자 누적 지표
+                過去30日間におけるアクティブユーザーの累積指標
               </Typography>
             </CardContent>
           </Card>

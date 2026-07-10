@@ -13,7 +13,7 @@ function SseStatusPage() {
         </Typography>
       </Box>
       <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
-        실시간 데이터 동기화를 처리하는 Server-Sent Events(SSE) 커넥션 및 통신 상태를 모니터링합니다.
+        リアルタイムデータの同期処理を行うServer-Sent Events (SSE) コネクションおよび通信状態を監視します。
       </Typography>
       
       <Grid container spacing={3}>
@@ -27,7 +27,7 @@ function SseStatusPage() {
                 892
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                현재 실시간 대기 정보를 구독 중인 클라이언트 수
+                現在、リアルタイムで待機情報を購読中のクライアント数
               </Typography>
             </CardContent>
           </Card>
@@ -42,7 +42,7 @@ function SseStatusPage() {
                 HEALTHY
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                이벤트 스트림 브로드캐스트 모듈 정상 동작 중
+                イベントストリームのブロードキャストモジュールが正常に動作中
               </Typography>
             </CardContent>
           </Card>
@@ -57,7 +57,7 @@ function SseStatusPage() {
                 895,412
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                지난 24시간 동안 푸시 송출된 누적 이벤트 수
+                過去24時間に配信された累積イベント数
               </Typography>
             </CardContent>
           </Card>

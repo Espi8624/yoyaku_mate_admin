@@ -13,7 +13,7 @@ function ErrorCountPage() {
         </Typography>
       </Box>
       <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
-        실시간 에러 모니터링 및 트래킹 시스템 대시보드입니다. 백엔드에서 전송되는 오류 로그를 파싱하여 실시간으로 경고합니다.
+        リアルタイムエラー監視およびトラッキングシステムのダッシュボードです。バックエンドから送信されるエラーログを解析し、リアルタイムで警告します。
       </Typography>
       
       <Grid container spacing={3}>
@@ -27,7 +27,7 @@ function ErrorCountPage() {
                 0
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                최근 1시간 동안 발생한 심각한 에러
+                直近1時間に発生した重大なエラー
               </Typography>
             </CardContent>
           </Card>
@@ -42,7 +42,7 @@ function ErrorCountPage() {
                 12
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                최근 1시간 동안 발생한 경고 로그
+                直近1時間に発生した警告ログ
               </Typography>
             </CardContent>
           </Card>
@@ -57,7 +57,7 @@ function ErrorCountPage() {
                 100%
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                감지된 전체 오류 해결 비율
+                検出されたエラー全体の解決率
               </Typography>
             </CardContent>
           </Card>
