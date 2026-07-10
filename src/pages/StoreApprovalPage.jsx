@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getStoresByStatus } from '../api/adminService';
 import StoreDetailModal from '../components/StoreDetailModal';
+import { COLORS } from '../styles/colors';
 
 function StoreApprovalPage() {
   const [stores, setStores] = useState([]);
@@ -56,11 +57,11 @@ function StoreApprovalPage() {
       <h1 style={{ marginBottom: '24px' }}>店舗承認管理</h1>
 
       {/* ===== ステータスタブ ===== */}
-      <div className="tabs" style={{ marginBottom: '20px', borderBottom: '1px solid #ddd' }}>
+      <div className="tabs" style={{ marginBottom: '20px', borderBottom: `1px solid ${COLORS.border}` }}>
         {[
-          { status: 'PENDING_REVIEW', label: '申請中', color: '#007bff' },
-          { status: 'APPROVED', label: '承認済み', color: '#28a745' },
-          { status: 'REJECTED', label: '拒否済み', color: '#dc3545' },
+          { status: 'PENDING_REVIEW', label: '申請中', color: COLORS.info },
+          { status: 'APPROVED', label: '承認済み', color: COLORS.success },
+          { status: 'REJECTED', label: '拒否済み', color: COLORS.error },
         ].map(({ status, label, color }) => (
           <button
             key={status}
