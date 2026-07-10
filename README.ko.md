@@ -17,23 +17,36 @@
 
 ```bash
 npm install
-npm run dev
+
+# 개발 환경(Development) 구동 - 로컬 백엔드 연동
+npm run dev:dev
+
+# 운영 환경(Production) 구동 - 실서버 백엔드 연동
+npm run dev:prod
 ```
 
 브라우저에서 `http://localhost:5173` 으로 접근합니다.
 
 ### 환경 변수
 
-```env
-VITE_PROXY_DEV_TARGET=http://localhost:8080
-VITE_PROXY_PROD_TARGET=https://your-production-server.fly.dev
-```
+프로젝트 루트 폴더의 환경 변수 파일(`.env.development` 및 `.env.production`)을 통해 구동 모드별 API 접속 경로를 관리합니다.
+
+* **.env.development** (개발 환경)
+  ```env
+  VITE_API_BASE_URL=http://localhost:8080/api/admin
+  VITE_PROXY_TARGET=http://localhost:8080
+  ```
+* **.env.production** (운영 환경)
+  ```env
+  VITE_API_BASE_URL=https://rusui-prod.fly.dev/api/admin
+  VITE_PROXY_TARGET=https://rusui-prod.fly.dev
+  ```
 
 ## Architecture
 
 ```
 src/
-├── api/            → Admin API 호출 정의 (환경별 Axios 인스턴스)
+├── api/            → Admin API 호출 정의 (구동 환경에 따른 Axios 인스턴스)
 ├── pages/          → 메인 화면 (StoreApprovalPage)
 ├── components/     → 공통 컴포넌트 (StoreDetailModal)
 ├── hooks/          → 비동기 통신 상태 캡슐화 커스텀 훅
