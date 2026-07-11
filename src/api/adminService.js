@@ -85,3 +85,31 @@ export const getLicenseImageUrl = async (imageKey) => {
     return '';
   }
 };
+
+/**
+ * 에러 통계(카운트)를 가져옵니다.
+ * @returns {Promise<object>}
+ */
+export const getErrorMetrics = async () => {
+  try {
+    const response = await apiClient.get('/metrics/errors');
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Error fetching error metrics:', error);
+    throw error;
+  }
+};
+
+/**
+ * 상세 에러 로그 목록을 가져옵니다.
+ * @returns {Promise<Array>}
+ */
+export const getErrorLogs = async () => {
+  try {
+    const response = await apiClient.get('/metrics/error-logs');
+    return response.data?.data || response.data || [];
+  } catch (error) {
+    console.error('Error fetching error logs:', error);
+    return [];
+  }
+};

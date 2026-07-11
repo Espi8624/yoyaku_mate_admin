@@ -19,7 +19,7 @@ const drawerWidth = 260;
 
 const menuItems = [
   { text: 'License Approval', icon: <VerifiedIcon />, path: '/store-approval' },
-  { text: 'Error Count', icon: <ErrorIcon />, path: '/error-count' },
+  { text: 'Error Dashboard', icon: <ErrorIcon />, path: '/error-count' },
   { text: 'Request Count', icon: <CompareArrowsIcon />, path: '/request-count' },
   { text: 'Active User', icon: <PeopleIcon />, path: '/active-user' },
   { text: 'SSE Status', icon: <SettingsInputAntennaIcon />, path: '/sse-status' },
