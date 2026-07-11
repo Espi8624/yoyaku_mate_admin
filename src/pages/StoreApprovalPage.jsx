@@ -1,8 +1,9 @@
-// src/pages/StoreApprovalPage.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { getStoresByStatus } from '../api/adminService';
 import StoreDetailModal from '../components/StoreDetailModal';
+import { COLORS } from '../styles/colors';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 function StoreApprovalPage() {
   const [stores, setStores] = useState([]);
@@ -52,78 +53,121 @@ function StoreApprovalPage() {
   };
 
   return (
-    <div style={{ padding: '24px' }}>
-      <h1 style={{ marginBottom: '24px' }}>店舗承認管理</h1>
+    <Box sx={{ p: 4 }}>
+      {/* タイトルおよび説明領域 */}
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+        <VerifiedIcon sx={{ fontSize: 40, color: COLORS.primary, mr: 2 }} />
+        <Typography variant="h4" sx={{ fontWeight: 'bold', color: COLORS.textPrimary }}>
+          License Approval
+        </Typography>
+      </Box>
+      <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
+        新規出店申請店舗から提出された営業許可証および証明書類の審査を行い、プラットフォームの承認処理を行います。
+      </Typography>
 
-      {/* ===== ステータスタブ ===== */}
-      <div className="tabs" style={{ marginBottom: '20px', borderBottom: '1px solid #ddd' }}>
+      {/* ===== ステータスフィルタータブ ===== */}
+      <Box sx={{ display: 'flex', gap: 1, mb: 3, borderBottom: `1px solid ${COLORS.border}`, pb: 0.5 }}>
         {[
-          { status: 'PENDING_REVIEW', label: '申請中', color: '#007bff' },
-          { status: 'APPROVED', label: '承認済み', color: '#28a745' },
-          { status: 'REJECTED', label: '拒否済み', color: '#dc3545' },
-        ].map(({ status, label, color }) => (
-          <button
-            key={status}
-            onClick={() => handleTabChange(status)}
-            style={{
-              padding: '10px 20px',
-              marginRight: '5px',
-              border: 'none',
-              borderBottom: activeTab === status ? `2px solid ${color}` : 'none',
-              backgroundColor: 'transparent',
-              fontWeight: activeTab === status ? 'bold' : 'normal',
-              cursor: 'pointer',
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+          { status: 'PENDING_REVIEW', label: '申請中', color: COLORS.info },
+          { status: 'APPROVED', label: '承認済み', color: COLORS.success },
+          { status: 'REJECTED', label: '拒否済み', color: COLORS.error },
+        ].map(({ status, label, color }) => {
+          const isActive = activeTab === status;
+          return (
+            <Button
+              key={status}
+              onClick={() => handleTabChange(status)}
+              sx={{
+                color: isActive ? color : COLORS.textSecondary,
+                fontWeight: isActive ? 'bold' : 'normal',
+                borderBottom: isActive ? `2px solid ${color}` : 'none',
+                borderRadius: 0,
+                px: 3,
+                py: 1.5,
+                fontSize: '0.95rem',
+                textTransform: 'none',
+                '&:hover': {
+                  bgcolor: 'rgba(255,255,255,0.03)',
+                }
+              }}
+            >
+              {label}
+            </Button>
+          );
+        })}
+      </Box>
 
       {isLoading ? (
-        <div>読み込み中...</div>
+        <Typography sx={{ color: COLORS.textSecondary, p: 2 }}>読み込み中...</Typography>
       ) : error ? (
-        <div style={{ color: 'red' }}>{error}</div>
+        <Typography sx={{ color: COLORS.error, p: 2 }}>{error}</Typography>
       ) : (
         <>
-          <p>
-            現在、{stores.length}件の
+          <Typography sx={{ color: COLORS.textSecondary, mb: 2, fontSize: '0.95rem' }}>
+            現在、{stores.length}件の{' '}
             {activeTab === 'PENDING_REVIEW'
               ? '承認待ちの申請'
               : activeTab === 'APPROVED'
               ? '承認済みの店舗'
-              : '拒否された申請'}
+              : '拒否された申請'}{' '}
             があります。
-          </p>
+          </Typography>
 
-          <table className="approval-table">
-            <thead>
-              <tr>
-                <th>店舗名</th>
-                <th>申請日</th>
-                <th>アクション</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stores.length > 0 ? (
-                stores.map((store) => (
-                  <tr key={store.store_id}>
-                    <td>{store.store_name}</td>
-                    <td>{new Date(store.created_at).toLocaleString('ja-JP')}</td>
-                    <td>
-                      <button onClick={() => handleOpenModal(store)}>詳細表示・処理</button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="3" style={{ textAlign: 'center', padding: '32px' }}>
-                    データがありません。
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          {/* ===== データテーブル ===== */}
+          <TableContainer component={Paper} sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.border}`, borderRadius: 2, overflow: 'hidden' }}>
+            <Table sx={{ minWidth: 650 }} aria-label="approval table">
+              <TableHead sx={{ bgcolor: COLORS.border }}>
+                <TableRow>
+                  <TableCell sx={{ color: COLORS.textPrimary, fontWeight: 'bold', fontSize: '0.95rem' }}>店舗名</TableCell>
+                  <TableCell sx={{ color: COLORS.textPrimary, fontWeight: 'bold', fontSize: '0.95rem' }}>申請日</TableCell>
+                  <TableCell align="right" sx={{ color: COLORS.textPrimary, fontWeight: 'bold', fontSize: '0.95rem', pr: 4 }}>アクション</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {stores.length > 0 ? (
+                  stores.map((store) => (
+                    <TableRow 
+                      key={store.store_id} 
+                      sx={{ 
+                        '&:last-child td, &:last-child th': { border: 0 }, 
+                        borderBottom: `1px solid ${COLORS.border}`,
+                        '&:hover': { bgcolor: 'rgba(255,255,255,0.02)' }
+                      }}
+                    >
+                      <TableCell sx={{ color: COLORS.textPrimary, fontWeight: '500' }}>{store.store_name}</TableCell>
+                      <TableCell sx={{ color: COLORS.textSecondary }}>{new Date(store.created_at).toLocaleString('ja-JP')}</TableCell>
+                      <TableCell align="right" sx={{ pr: 3 }}>
+                        <Button 
+                          variant="outlined" 
+                          onClick={() => handleOpenModal(store)}
+                          sx={{ 
+                            borderRadius: 1.5,
+                            borderColor: COLORS.primary,
+                            color: COLORS.primary,
+                            textTransform: 'none',
+                            fontWeight: '600',
+                            px: 2,
+                            '&:hover': {
+                              borderColor: COLORS.primaryHover,
+                              bgcolor: COLORS.primaryLight,
+                            }
+                          }}
+                        >
+                          詳細表示・処理
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={3} align="center" sx={{ py: 6, color: COLORS.textMuted }}>
+                      データがありません。
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       )}
 
@@ -134,7 +178,7 @@ function StoreApprovalPage() {
           onUpdate={handleUpdate}
         />
       )}
-    </div>
+    </Box>
   );
 }
 
