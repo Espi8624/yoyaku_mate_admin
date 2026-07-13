@@ -19,6 +19,7 @@ docs/
 |------|------|
 | [store-approval.md](./features/store-approval.ko.md) | 점포 라이선스 심사 및 승인/거절 워크플로우 |
 | [error-dashboard.ko.md](./features/error-dashboard.ko.md) | 에러 통계 및 상세 로그 추적 대시보드 UI |
+| [request-counter.ko.md](./features/request-counter.ko.md) | 실시간 API 리퀘스트 요약 통계 및 상세 로그 테이블 UI |
 
 
 ---
@@ -38,6 +39,7 @@ docs/
 |------|----------|
 | [ADR-001-vite-proxy.md](./decisions/ADR-001-vite-proxy.ko.md) | Vite 개발 서버 프록시 채택 이유 |
 | [ADR-002-use-polling-for-error-dashboard.ko.md](./decisions/ADR-002-use-polling-for-error-dashboard.ko.md) | 에러 대시보드 내 HTTP 폴링 방식 채택 이유 |
+| [ADR-003-request-counter-architecture.ko.md](./decisions/ADR-003-request-counter-architecture.ko.md) | 자체 메트릭 수집 및 리퀘스트 카운터 아키텍처 채택 이유 |
 
 
 ---

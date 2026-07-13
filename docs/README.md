@@ -19,6 +19,7 @@ docs/
 |------|------|
 | [store-approval.md](./features/store-approval.md) | 店舗ライセンス審査および承認/拒否ワークフロー |
 | [error-dashboard.md](./features/error-dashboard.md) | エラー統計および詳細ログ追跡ダッシュボードUI |
+| [request-counter.md](./features/request-counter.md) | リアルタイムAPIリクエスト要約統計および詳細ログテーブルUI |
 
 
 ---
@@ -38,6 +39,7 @@ docs/
 |------|----------|
 | [ADR-001-vite-proxy.md](./decisions/ADR-001-vite-proxy.md) | Vite 開発サーバープロキシ採用の理由 |
 | [ADR-002-use-polling-for-error-dashboard.md](./decisions/ADR-002-use-polling-for-error-dashboard.md) | エラーダッシュボードにおけるHTTPポーリング採用の理由 |
+| [ADR-003-request-counter-architecture.md](./decisions/ADR-003-request-counter-architecture.md) | 独自メトリクス収集およびリクエストカウンターアーキテクチャの採用 |
 
 
 ---
