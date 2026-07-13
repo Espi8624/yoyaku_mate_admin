@@ -113,3 +113,31 @@ export const getErrorLogs = async () => {
     return [];
   }
 };
+
+/**
+ * リクエスト統計(カウント)を取得します。
+ * @returns {Promise<object>}
+ */
+export const getRequestMetrics = async () => {
+  try {
+    const response = await apiClient.get('/metrics/requests');
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Error fetching request metrics:', error);
+    throw error;
+  }
+};
+
+/**
+ * 詳細リクエストログ一覧を取得します。
+ * @returns {Promise<Array>}
+ */
+export const getRequestLogs = async () => {
+  try {
+    const response = await apiClient.get('/metrics/request-logs');
+    return response.data?.data || response.data || [];
+  } catch (error) {
+    console.error('Error fetching request logs:', error);
+    return [];
+  }
+};
