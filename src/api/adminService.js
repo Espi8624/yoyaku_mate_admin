@@ -87,7 +87,7 @@ export const getLicenseImageUrl = async (imageKey) => {
 };
 
 /**
- * 에러 통계(카운트)를 가져옵니다.
+ * エラー統計(カウント)を取得します。
  * @returns {Promise<object>}
  */
 export const getErrorMetrics = async () => {
@@ -101,7 +101,7 @@ export const getErrorMetrics = async () => {
 };
 
 /**
- * 상세 에러 로그 목록을 가져옵니다.
+ * 詳細エラーログ一覧を取得します。
  * @returns {Promise<Array>}
  */
 export const getErrorLogs = async () => {
@@ -139,5 +139,19 @@ export const getRequestLogs = async () => {
   } catch (error) {
     console.error('Error fetching request logs:', error);
     return [];
+  }
+};
+
+/**
+ * アクティブユーザーの統計情報を取得します。
+ * @returns {Promise<object>}
+ */
+export const getActiveUserMetrics = async () => {
+  try {
+    const response = await apiClient.get('/metrics/active-users');
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Error fetching active user metrics:', error);
+    throw error;
   }
 };
