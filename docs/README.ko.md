@@ -21,6 +21,7 @@ docs/
 | [error-dashboard.ko.md](./features/error-dashboard.ko.md) | 에러 통계 및 상세 로그 추적 대시보드 UI |
 | [request-counter.ko.md](./features/request-counter.ko.md) | 실시간 API 리퀘스트 요약 통계 및 상세 로그 테이블 UI |
 | [active-user-dashboard.ko.md](./features/active-user-dashboard.ko.md) | 실시간 활성 사용자(동시 접속자/DAU/MAU) 모니터링 대시보드 UI |
+| [sse-monitoring.ko.md](./features/sse-monitoring.ko.md) | SSE 상태(활성 연결 수, 평균 유지 시간) 및 좀비 연결 감시 모니터링 UI |
 
 ---
 
@@ -33,6 +34,7 @@ docs/
 | [error-dashboard.ko.md](./implementation/error-dashboard.ko.md) | 에러 대시보드 백엔드 연동 및 UI 구현 상세 |
 | [request-counter.ko.md](./implementation/request-counter.ko.md) | 리퀘스트 카운터 백엔드 연동 및 UI 구현 상세 |
 | [active-user-tracking.ko.md](./implementation/active-user-tracking.ko.md) | 실시간 활성 사용자 트래킹 백엔드 연동 및 UI 구현 상세 |
+| [sse-monitoring.ko.md](./implementation/sse-monitoring.ko.md) | SSE 상태 모니터링 대시보드 백엔드 연동 및 UI 구현 상세 |
 
 ---
 
@@ -44,6 +46,8 @@ docs/
 | [ADR-002-use-polling-for-error-dashboard.md](./decisions/ADR-002-use-polling-for-error-dashboard.ko.md) | 에러 대시보드 내 HTTP 폴링 방식 채택 이유 |
 | [ADR-003-request-counter-architecture.md](./decisions/ADR-003-request-counter-architecture.ko.md) | 자체 메트릭 수집 및 리퀘스트 카운터 아키텍처 채택 이유 |
 | [ADR-004-active-user-tracking.ko.md](./decisions/ADR-004-active-user-tracking.ko.md) | 인메모리 슬라이딩 윈도우 및 일별 활성 사용자 컬렉션을 활용한 접속자 트래킹 채택 이유 |
+| [ADR-005-sse-zombie-detection.ko.md](../../yoyaku_mate_server/docs/decisions/ADR-005-sse-zombie-detection.ko.md) | SSE 좀비 연결 감지 방식 — `select-default` 논블로킹 전송 채택 이유 |
+| [ADR-006-sse-monitoring-polling.ko.md](../../yoyaku_mate_server/docs/decisions/ADR-006-sse-monitoring-polling.ko.md) | SSE 모니터링 대시보드의 통신 격리 및 HTTP 폴링 방식 채택 이유 |
 
 
 ---

@@ -155,3 +155,17 @@ export const getActiveUserMetrics = async () => {
     throw error;
   }
 };
+
+/**
+ * SSEブローカーのリアルタイム接続状況を取得します。
+ * @returns {Promise<object>} SSEMetricsオブジェクト
+ */
+export const getSseMetrics = async () => {
+  try {
+    const response = await apiClient.get('/metrics/sse-status');
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Error fetching SSE metrics:', error);
+    throw error;
+  }
+};

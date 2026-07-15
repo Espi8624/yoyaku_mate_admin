@@ -23,7 +23,11 @@ src/
 │   └── adminService.js       # すべての管理者用APIの定義 (環境に応じたAxiosインスタンスの生成)
 │
 ├── pages/
-│   └── StoreApprovalPage.jsx # 店舗承認のメインダッシュボード画面
+│   ├── StoreApprovalPage.jsx # 店舗承認のメインダッシュボード画面
+│   ├── ErrorCountPage.jsx    # リアルタイムエラーログ監視ダッシュボード
+│   ├── RequestCountPage.jsx  # リアルタイムAPIトラフィック収集ダッシュボード
+│   ├── ActiveUserPage.jsx    # リアルタイムアクティブユーザー(同時接続者/DAU/MAU)ダッシュボード
+│   └── SseStatusPage.jsx     # SSEブローカー接続状況およびゾンビ接続クリアの監視画面
 │
 ├── components/
 │   └── StoreDetailModal.jsx  # 店舗詳細モーダル (営業許可証画像表示 + 承認/却下ボタン)
@@ -53,8 +57,9 @@ adminService.js (Axios)
     │
 Backend Admin API (/api/admin/*)
     │
-    ├── MongoDB Atlas    ← 店舗のライセンスステータスの更新
-    └── Cloudflare R2   ← 事業者登録証の一時アクセスURLの発行
+    ├── MongoDB Atlas      ← 店舗状態の更新、エラー/リクエストログおよびDAU/MAUのクエリ
+    ├── Go Server Memory   ← リアルタイム同時接続者(5分スライディングウィンドウ)およびSSE接続統計のクエリ (DB参照なし)
+    └── Cloudflare R2      ← 営業許可証の一時アクセスURLの発行
 ```
 
 ---
@@ -75,5 +80,14 @@ Backend Admin API (/api/admin/*)
 ## 関連ドキュメント
 
 - [店舗ライセンス審査機能](../features/store-approval.md)
+- [エラーダッシュボード機能](../features/error-dashboard.md)
+- [リクエストカウンター機能](../features/request-counter.md)
+- [アクティブユーザーダッシュボード機能](../features/active-user-dashboard.md)
+- [SSEステータス監視機能](../features/sse-monitoring.md)
 - [Dev/Prod 二重環境 Vite プロキシの実装](./dual-env-proxy.md)
 - [ADR-001: Vite 開発サーバープロキシの採用](../decisions/ADR-001-vite-proxy.md)
+- [ADR-002: エラーダッシュボードにおけるHTTPポーリング採用の理由](../../yoyaku_mate_server/docs/decisions/ADR-002-use-polling-for-error-dashboard.md)
+- [ADR-003: 独自メトリクス収集およびリクエストカウンターアーキテクチャの採用](../../yoyaku_mate_server/docs/decisions/ADR-003-request-counter-architecture.md)
+- [ADR-004: インメモリのスライディングウィンドウおよび日別アクティブユーザーコレクションを活用した接続者トラッキングの採用理由](../../yoyaku_mate_server/docs/decisions/ADR-004-active-user-tracking.md)
+- [ADR-005: SSEゾンビ接続検知方式の採用](../../yoyaku_mate_server/docs/decisions/ADR-005-sse-zombie-detection.md)
+- [ADR-006: SSE監視ダッシュボードにおける通信の分離およびHTTPポーリング方式採用の理由](../../yoyaku_mate_server/docs/decisions/ADR-006-sse-monitoring-polling.md)
