@@ -20,7 +20,7 @@ docs/
 | [store-approval.md](./features/store-approval.ko.md) | 점포 라이선스 심사 및 승인/거절 워크플로우 |
 | [error-dashboard.ko.md](./features/error-dashboard.ko.md) | 에러 통계 및 상세 로그 추적 대시보드 UI |
 | [request-counter.ko.md](./features/request-counter.ko.md) | 실시간 API 리퀘스트 요약 통계 및 상세 로그 테이블 UI |
-
+| [active-user-dashboard.ko.md](./features/active-user-dashboard.ko.md) | 실시간 활성 사용자(동시 접속자/DAU/MAU) 모니터링 대시보드 UI |
 
 ---
 
@@ -30,6 +30,9 @@ docs/
 |------|------|
 | [architecture.md](./implementation/architecture.ko.md) | 프로젝트 구조 및 데이터 흐름 |
 | [dual-env-proxy.md](./implementation/dual-env-proxy.ko.md) | Dev/Prod 이중 환경 Vite 프록시 구현 |
+| [error-dashboard.ko.md](./implementation/error-dashboard.ko.md) | 에러 대시보드 백엔드 연동 및 UI 구현 상세 |
+| [request-counter.ko.md](./implementation/request-counter.ko.md) | 리퀘스트 카운터 백엔드 연동 및 UI 구현 상세 |
+| [active-user-tracking.ko.md](./implementation/active-user-tracking.ko.md) | 실시간 활성 사용자 트래킹 백엔드 연동 및 UI 구현 상세 |
 
 ---
 
@@ -38,8 +41,9 @@ docs/
 | 문서 | 결정 내용 |
 |------|----------|
 | [ADR-001-vite-proxy.md](./decisions/ADR-001-vite-proxy.ko.md) | Vite 개발 서버 프록시 채택 이유 |
-| [ADR-002-use-polling-for-error-dashboard.ko.md](./decisions/ADR-002-use-polling-for-error-dashboard.ko.md) | 에러 대시보드 내 HTTP 폴링 방식 채택 이유 |
-| [ADR-003-request-counter-architecture.ko.md](./decisions/ADR-003-request-counter-architecture.ko.md) | 자체 메트릭 수집 및 리퀘스트 카운터 아키텍처 채택 이유 |
+| [ADR-002-use-polling-for-error-dashboard.md](./decisions/ADR-002-use-polling-for-error-dashboard.ko.md) | 에러 대시보드 내 HTTP 폴링 방식 채택 이유 |
+| [ADR-003-request-counter-architecture.md](./decisions/ADR-003-request-counter-architecture.ko.md) | 자체 메트릭 수집 및 리퀘스트 카운터 아키텍처 채택 이유 |
+| [ADR-004-active-user-tracking.ko.md](./decisions/ADR-004-active-user-tracking.ko.md) | 인메모리 슬라이딩 윈도우 및 일별 활성 사용자 컬렉션을 활용한 접속자 트래킹 채택 이유 |
 
 
 ---
