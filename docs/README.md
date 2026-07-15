@@ -21,6 +21,7 @@ docs/
 | [error-dashboard.md](./features/error-dashboard.md) | エラー統計および詳細ログ追跡ダッシュボードUI |
 | [request-counter.md](./features/request-counter.md) | リアルタイムAPIリクエスト要約統計および詳細ログテーブルUI |
 | [active-user-dashboard.md](./features/active-user-dashboard.md) | リアルタイムアクティブユーザー(同時接続者/DAU/MAU)監視ダッシュボードUI |
+| [sse-monitoring.md](./features/sse-monitoring.md) | SSEステータス（アクティブ接続数、平均維持時間）およびゾンビ接続監視モニタリングUI |
 
 ---
 
@@ -33,6 +34,7 @@ docs/
 | [error-dashboard.md](./implementation/error-dashboard.md) | エラーダッシュボードのバックエンド連携およびUI実装詳細 |
 | [request-counter.md](./implementation/request-counter.md) | リクエストカウンターのバックエンド連携およびUI実装詳細 |
 | [active-user-tracking.md](./implementation/active-user-tracking.md) | リアルタイムアクティブユーザートラッキングのバックエンド連携およびUI実装詳細 |
+| [sse-monitoring.md](./implementation/sse-monitoring.md) | SSEステータス監視ダッシュボードのバックエンド連携およびUI実装詳細 |
 
 ---
 
@@ -44,6 +46,8 @@ docs/
 | [ADR-002-use-polling-for-error-dashboard.md](./decisions/ADR-002-use-polling-for-error-dashboard.md) | エラーダッシュボードにおけるHTTPポーリング採用の理由 |
 | [ADR-003-request-counter-architecture.md](./decisions/ADR-003-request-counter-architecture.md) | 独自メトリクス収集およびリクエストカウンターアーキテクチャの採用 |
 | [ADR-004-active-user-tracking.md](./decisions/ADR-004-active-user-tracking.md) | インメモリのスライディングウィンドウおよび日別アクティブユーザーコレクションを活用した接続者トラッキングの採用理由 |
+| [ADR-005-sse-zombie-detection.md](../../yoyaku_mate_server/docs/decisions/ADR-005-sse-zombie-detection.md) | SSEゾンビ接続検知方式 — select-defaultによるノンブロッキング送信の採用理由 |
+| [ADR-006-sse-monitoring-polling.md](../../yoyaku_mate_server/docs/decisions/ADR-006-sse-monitoring-polling.md) | SSE監視ダッシュボードにおける通信の分離およびHTTPポーリング方式採用の理由 |
 
 
 ---

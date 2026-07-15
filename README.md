@@ -53,7 +53,7 @@ npm run dev:prod
 ```
 src/
 ├── api/            → 管理者用API呼び出し定義 (起動環境に応じたAxiosインスタンス)
-├── pages/          → メイン画面 (StoreApprovalPage, ErrorCountPage, RequestCountPage, ActiveUserPage)
+├── pages/          → メイン画面 (StoreApprovalPage, ErrorCountPage, RequestCountPage, ActiveUserPage, SseStatusPage)
 ├── components/     → 共通コンポーネント (StoreDetailModal)
 ├── hooks/          → 非同期通信の状態をカプセル化したカスタムフック
 └── styles/         → MUIグローバルテーマ
