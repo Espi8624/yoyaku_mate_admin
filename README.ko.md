@@ -53,7 +53,7 @@ npm run dev:prod
 ```
 src/
 ├── api/            → Admin API 호출 정의 (구동 환경에 따른 Axios 인스턴스)
-├── pages/          → 메인 화면 (StoreApprovalPage, ErrorCountPage, RequestCountPage, ActiveUserPage, SseStatusPage)
+├── pages/          → 메인 화면 (StoreApprovalPage, ErrorCountPage, RequestCountPage, ActiveUserPage, SseStatusPage, ResponseTimePage)
 ├── components/     → 공통 컴포넌트 (StoreDetailModal)
 ├── hooks/          → 비동기 통신 상태 캡슐화 커스텀 훅
 └── styles/         → MUI 글로벌 테마
