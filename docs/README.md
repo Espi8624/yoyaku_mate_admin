@@ -22,6 +22,7 @@ docs/
 | [request-counter.md](./features/request-counter.md) | リアルタイムAPIリクエスト要約統計および詳細ログテーブルUI |
 | [active-user-dashboard.md](./features/active-user-dashboard.md) | リアルタイムアクティブユーザー(同時接続者/DAU/MAU)監視ダッシュボードUI |
 | [sse-monitoring.md](./features/sse-monitoring.md) | SSEステータス（アクティブ接続数、平均維持時間）およびゾンビ接続監視モニタリングUI |
+| [response-time-dashboard.md](./features/response-time-dashboard.md) | APIレイテンシ(avg/P95/P99)およびエンドポイント別応答時間監視ダッシュボードUI |
 
 ---
 
@@ -35,6 +36,7 @@ docs/
 | [request-counter.md](./implementation/request-counter.md) | リクエストカウンターのバックエンド連携およびUI実装詳細 |
 | [active-user-tracking.md](./implementation/active-user-tracking.md) | リアルタイムアクティブユーザートラッキングのバックエンド連携およびUI実装詳細 |
 | [sse-monitoring.md](./implementation/sse-monitoring.md) | SSEステータス監視ダッシュボードのバックエンド連携およびUI実装詳細 |
+| [response-time-dashboard.md](./implementation/response-time-dashboard.md) | Response TimeダッシュボードReactコンポーネント、時間範囲タブ、MUI ToggleButtonバグ修正、色判定ロジックの実装詳細 |
 
 ---
 

@@ -169,3 +169,18 @@ export const getSseMetrics = async () => {
     throw error;
   }
 };
+
+/**
+ * Response Time メトリクスを取得します。
+ * @param {string} range - 集計対象の時間範囲 ('5m' | '1h' | '24h')
+ * @returns {Promise<object>} ResponseTimeMetrics オブジェクト
+ */
+export const getResponseTimeMetrics = async (range = '1h') => {
+  try {
+    const response = await apiClient.get(`/metrics/response-time?range=${range}`);
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Error fetching response time metrics:', error);
+    throw error;
+  }
+};

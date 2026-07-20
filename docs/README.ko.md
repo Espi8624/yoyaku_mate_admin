@@ -22,6 +22,7 @@ docs/
 | [request-counter.ko.md](./features/request-counter.ko.md) | 실시간 API 리퀘스트 요약 통계 및 상세 로그 테이블 UI |
 | [active-user-dashboard.ko.md](./features/active-user-dashboard.ko.md) | 실시간 활성 사용자(동시 접속자/DAU/MAU) 모니터링 대시보드 UI |
 | [sse-monitoring.ko.md](./features/sse-monitoring.ko.md) | SSE 상태(활성 연결 수, 평균 유지 시간) 및 좀비 연결 감시 모니터링 UI |
+| [response-time-dashboard.ko.md](./features/response-time-dashboard.ko.md) | API 레이턴시(avg/P95/P99) 및 엔드포인트별 응답시간 모니터링 대시보드 UI |
 
 ---
 
@@ -35,6 +36,7 @@ docs/
 | [request-counter.ko.md](./implementation/request-counter.ko.md) | 리퀘스트 카운터 백엔드 연동 및 UI 구현 상세 |
 | [active-user-tracking.ko.md](./implementation/active-user-tracking.ko.md) | 실시간 활성 사용자 트래킹 백엔드 연동 및 UI 구현 상세 |
 | [sse-monitoring.ko.md](./implementation/sse-monitoring.ko.md) | SSE 상태 모니터링 대시보드 백엔드 연동 및 UI 구현 상세 |
+| [response-time-dashboard.ko.md](./implementation/response-time-dashboard.ko.md) | Response Time 대시보드 React 컴포넌트, 시간 범위 탭, MUI ToggleButton 버그 수정, 색상 로직 구현 상세 |
 
 ---
 
