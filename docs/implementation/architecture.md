@@ -27,7 +27,8 @@ src/
 │   ├── ErrorCountPage.jsx    # リアルタイムエラーログ監視ダッシュボード
 │   ├── RequestCountPage.jsx  # リアルタイムAPIトラフィック収集ダッシュボード
 │   ├── ActiveUserPage.jsx    # リアルタイムアクティブユーザー(同時接続者/DAU/MAU)ダッシュボード
-│   └── SseStatusPage.jsx     # SSEブローカー接続状況およびゾンビ接続クリアの監視画面
+│   ├── ResponseTimePage.jsx  # リアルタイムレイテンシ(avg/P95/P99)監視ダッシュボード
+│   └── AuditLogPage.jsx     # 管理者操作の監査ログ自動更新および確認画面
 │
 ├── components/
 │   └── StoreDetailModal.jsx  # 店舗詳細モーダル (営業許可証画像表示 + 承認/却下ボタン)
@@ -84,6 +85,7 @@ Backend Admin API (/api/admin/*)
 - [リクエストカウンター機能](../features/request-counter.md)
 - [アクティブユーザーダッシュボード機能](../features/active-user-dashboard.md)
 - [SSEステータス監視機能](../features/sse-monitoring.md)
+- [監査ログ機能](../features/audit-log.md)
 - [Dev/Prod 二重環境 Vite プロキシの実装](./dual-env-proxy.md)
 - [ADR-001: Vite 開発サーバープロキシの採用](../decisions/ADR-001-vite-proxy.md)
 - [ADR-002: エラーダッシュボードにおけるHTTPポーリング採用の理由](../../../yoyaku_mate_server/docs/decisions/ADR-002-use-polling-for-error-dashboard.md)
