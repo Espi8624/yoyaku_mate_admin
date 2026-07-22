@@ -27,7 +27,8 @@ src/
 │   ├── ErrorCountPage.jsx    # 실시간 에러 로깅 모니터링 대시보드
 │   ├── RequestCountPage.jsx  # 실시간 API 트래픽 수집 대시보드
 │   ├── ActiveUserPage.jsx    # 실시간 활성 사용자(Concurrent/DAU/MAU) 대시보드
-│   └── SseStatusPage.jsx     # SSE 브로커 연결 현황 및 좀비 제거 모니터링 화면
+│   ├── ResponseTimePage.jsx  # 실시간 레이턴시(avg/P95/P99) 모니터링 대시보드
+│   └── AuditLogPage.jsx     # 관리자 작업 감사 로그 자동 갱신 및 확인 화면
 │
 ├── components/
 │   └── StoreDetailModal.jsx  # 점포 상세 모달 (사업자등록증 이미지 + 승인/거절 버튼)
@@ -85,6 +86,7 @@ Backend Admin API (/api/admin/*)
 - [리퀘스트 카운터 기능 사양](../features/request-counter.ko.md)
 - [활성 사용자 대시보드 기능 사양](../features/active-user-dashboard.ko.md)
 - [SSE 상태 모니터링 기능 사양](../features/sse-monitoring.ko.md)
+- [감사 로그 기능 사양](../features/audit-log.ko.md)
 - [Dev/Prod 이중 환경 프록시 구현](./dual-env-proxy.ko.md)
 - [ADR-001: Vite 프록시 채택](../decisions/ADR-001-vite-proxy.ko.md)
 - [ADR-002: 에러 대시보드 내 HTTP 폴링 방식 채택](../../../yoyaku_mate_server/docs/decisions/ADR-002-use-polling-for-error-dashboard.ko.md)

@@ -184,3 +184,17 @@ export const getResponseTimeMetrics = async (range = '1h') => {
     throw error;
   }
 };
+
+/**
+ * 監査ログ(Audit Log)一覧を取得します。
+ * @returns {Promise<Array>} 最新順最大100件の監査ログ配列
+ */
+export const getAuditLogs = async () => {
+  try {
+    const response = await apiClient.get('/metrics/audit-logs');
+    return response.data?.data || response.data || [];
+  } catch (error) {
+    console.error('Error fetching audit logs:', error);
+    return [];
+  }
+};
