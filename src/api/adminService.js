@@ -198,3 +198,17 @@ export const getAuditLogs = async () => {
     return [];
   }
 };
+
+/**
+ * システムメトリクス（System Metrics）を取得します。（CPU、Memory、Disk）
+ * @returns {Promise<object>}
+ */
+export const getSystemMetrics = async () => {
+  try {
+    const response = await apiClient.get('/metrics/system');
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Error fetching system metrics:', error);
+    throw error;
+  }
+};

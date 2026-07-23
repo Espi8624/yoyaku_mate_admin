@@ -24,6 +24,7 @@ docs/
 | [sse-monitoring.ko.md](./features/sse-monitoring.ko.md) | SSE 상태(활성 연결 수, 평균 유지 시간) 및 좀비 연결 감시 모니터링 UI |
 | [response-time-dashboard.ko.md](./features/response-time-dashboard.ko.md) | API 레이턴시(avg/P95/P99) 및 엔드포인트별 응답시간 모니터링 대시보드 UI |
 | [audit-log.ko.md](./features/audit-log.ko.md) | 관리자 작업 감사 로그 실시간 자동 갱신 및 필터 조회 화면 UI |
+| [system-metrics-dashboard.ko.md](./features/system-metrics-dashboard.ko.md) | 서버 하드웨어 리소스(CPU, Memory, Disk) 실시간 상태 모니터링 UI |
 
 ---
 
@@ -39,6 +40,7 @@ docs/
 | [sse-monitoring.ko.md](./implementation/sse-monitoring.ko.md) | SSE 상태 모니터링 대시보드 백엔드 연동 및 UI 구현 상세 |
 | [response-time-dashboard.ko.md](./implementation/response-time-dashboard.ko.md) | Response Time 대시보드 React 컴포넌트, 시간 범위 탭, MUI ToggleButton 버그 수정, 색상 로직 구현 상세 |
 | [audit-log.ko.md](./implementation/audit-log.ko.md) | 감사 로그 대시보드 React 컴포넌트, 액션 필터, 5초 자동 갱신 UI 구현 상세 |
+| [system-metrics-dashboard.ko.md](./implementation/system-metrics-dashboard.ko.md) | 시스템 메트릭스 대시보드 백엔드 연동 및 UI 구현 상세 |
 
 ---
 

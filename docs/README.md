@@ -24,6 +24,7 @@ docs/
 | [sse-monitoring.md](./features/sse-monitoring.md) | SSEステータス（アクティブ接続数、平均維持時間）およびゾンビ接続監視モニタリングUI |
 | [response-time-dashboard.md](./features/response-time-dashboard.md) | APIレイテンシ(avg/P95/P99)およびエンドポイント別応答時間監視ダッシュボードUI |
 | [audit-log.md](./features/audit-log.md) | 管理者操作の監査ログ自動更新およびフィルター確認画面UI |
+| [system-metrics-dashboard.md](./features/system-metrics-dashboard.md) | サーバーハードウェアリソース(CPU、Memory、Disk)リアルタイム状態監視UI |
 
 ---
 
@@ -39,6 +40,7 @@ docs/
 | [sse-monitoring.md](./implementation/sse-monitoring.md) | SSEステータス監視ダッシュボードのバックエンド連携およびUI実装詳細 |
 | [response-time-dashboard.md](./implementation/response-time-dashboard.md) | Response TimeダッシュボードReactコンポーネント、時間範囲タブ、MUI ToggleButtonバグ修正、色判定ロジックの実装詳細 |
 | [audit-log.md](./implementation/audit-log.md) | 監査ログダッシュボードReactコンポーネント、アクションフィルター、5秒自動更新UI実装詳細 |
+| [system-metrics-dashboard.md](./implementation/system-metrics-dashboard.md) | システムメトリクスダッシュボードのバックエンド連携およびUI実装詳細 |
 
 ---
 

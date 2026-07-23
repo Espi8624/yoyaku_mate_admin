@@ -28,7 +28,8 @@ src/
 │   ├── RequestCountPage.jsx  # 실시간 API 트래픽 수집 대시보드
 │   ├── ActiveUserPage.jsx    # 실시간 활성 사용자(Concurrent/DAU/MAU) 대시보드
 │   ├── ResponseTimePage.jsx  # 실시간 레이턴시(avg/P95/P99) 모니터링 대시보드
-│   └── AuditLogPage.jsx     # 관리자 작업 감사 로그 자동 갱신 및 확인 화면
+│   ├── AuditLogPage.jsx      # 관리자 작업 감사 로그 자동 갱신 및 확인 화면
+│   └── SystemMetricsPage.jsx # 시스템 하드웨어 리소스(CPU/Mem/Disk) 실시간 모니터링 화면
 │
 ├── components/
 │   └── StoreDetailModal.jsx  # 점포 상세 모달 (사업자등록증 이미지 + 승인/거절 버튼)
