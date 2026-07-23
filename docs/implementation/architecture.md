@@ -28,7 +28,8 @@ src/
 │   ├── RequestCountPage.jsx  # リアルタイムAPIトラフィック収集ダッシュボード
 │   ├── ActiveUserPage.jsx    # リアルタイムアクティブユーザー(同時接続者/DAU/MAU)ダッシュボード
 │   ├── ResponseTimePage.jsx  # リアルタイムレイテンシ(avg/P95/P99)監視ダッシュボード
-│   └── AuditLogPage.jsx     # 管理者操作の監査ログ自動更新および確認画面
+│   ├── AuditLogPage.jsx      # 管理者操作の監査ログ自動更新および確認画面
+│   └── SystemMetricsPage.jsx # システムハードウェアリソース(CPU/Mem/Disk)リアルタイム監視画面
 │
 ├── components/
 │   └── StoreDetailModal.jsx  # 店舗詳細モーダル (営業許可証画像表示 + 承認/却下ボタン)
