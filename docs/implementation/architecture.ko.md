@@ -95,3 +95,15 @@ Backend Admin API (/api/admin/*)
 - [ADR-001: Vite 프록시 채택](../decisions/ADR-001-vite-proxy.ko.md)
 - [ADR-002: 에러 대시보드 내 HTTP 폴링 방식 채택](../../../yoyaku_mate_server/docs/decisions/ADR-002-use-polling-for-error-dashboard.ko.md)
 - [ADR-006: SSE 모니터링 대시보드의 통신 격리 및 HTTP 폴링 방식 채택](../../../yoyaku_mate_server/docs/decisions/ADR-006-sse-monitoring-polling.ko.md)
+
+---
+
+## 향후 개발 과제 (TODO)
+
+### 이메일 알림 연동 (Resend API)
+서버 장애(응답 지연, 에러 급증, CPU 과부하 등) 발생 시 관리자에게 즉각적인 이메일 알림을 발송하는 기능은 추후 개발로 연기되었습니다.
+- **방향성**: 외부 메일 발송 서비스인 [Resend](https://resend.com) API를 활용하여 무료 티어 내에서 알림 시스템을 구축합니다.
+- **구현 계획**:
+  1. 서버(Go)에서 5분 주기로 메트릭스를 모니터링하는 백그라운드 Worker 구현.
+  2. 시스템 임계치(Threshold) 초과 시 Resend API를 통해 이메일 발송 (`utils/email.go`).
+  3. 관리자 패널(`AlertPage.jsx`)에서 임계치 설정(Error Rate, API Latency 등) 및 테스트 메일 발송 기능 구현.
