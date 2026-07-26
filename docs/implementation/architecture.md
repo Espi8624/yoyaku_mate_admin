@@ -94,3 +94,15 @@ Backend Admin API (/api/admin/*)
 - [ADR-001: Vite 開発サーバープロキシの採用](../decisions/ADR-001-vite-proxy.md)
 - [ADR-002: エラーダッシュボードにおけるHTTPポーリング採用の理由](../../../yoyaku_mate_server/docs/decisions/ADR-002-use-polling-for-error-dashboard.md)
 - [ADR-006: SSE監視ダッシュボードにおける通信の分離およびHTTPポーリング方式採用の理由](../../../yoyaku_mate_server/docs/decisions/ADR-006-sse-monitoring-polling.md)
+
+---
+
+## 今後の開発課題 (TODO)
+
+### メール/Slack通知連携 (Resend API等)
+サーバー障害（応答遅延、エラー急増、CPU過負荷など）発生時に、管理者に即座に通知を送信する機能は今後の開発に延期されました。
+- **方向性**: 外部メール配信サービスである [Resend](https://resend.com) のAPIやSlack Webhookを活用し、無料枠内で通知システムを構築します。
+- **実装計画**:
+  1. サーバー(Go)側で5分間隔でメトリクスを監視するバックグラウンドWorkerを実装。
+  2. システムの閾値(Threshold)を超えた場合、Resend API / Slack Webhook を通じて通知を送信 (`utils/email.go` 等)。
+  3. 管理者パネル (`AlertPage.jsx`) にて、閾値設定 (Error Rate, API Latency 等) およびテスト送信機能を実装。
