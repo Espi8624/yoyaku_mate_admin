@@ -29,7 +29,8 @@ src/
 │   ├── ActiveUserPage.jsx    # リアルタイムアクティブユーザー(同時接続者/DAU/MAU)ダッシュボード
 │   ├── ResponseTimePage.jsx  # リアルタイムレイテンシ(avg/P95/P99)監視ダッシュボード
 │   ├── AuditLogPage.jsx      # 管理者操作の監査ログ自動更新および確認画面
-│   └── SystemMetricsPage.jsx # システムハードウェアリソース(CPU/Mem/Disk)リアルタイム監視画面
+│   ├── SystemMetricsPage.jsx # システムハードウェアリソース(CPU/Mem/Disk)リアルタイム監視画面
+│   └── DbMetricsPage.jsx     # リアルタイムDBメトリクス(コネクション、容量、スロークエリ)ダッシュボード
 │
 ├── components/
 │   └── StoreDetailModal.jsx  # 店舗詳細モーダル (営業許可証画像表示 + 承認/却下ボタン)
@@ -86,8 +87,10 @@ Backend Admin API (/api/admin/*)
 - [リクエストカウンター機能](../features/request-counter.md)
 - [アクティブユーザーダッシュボード機能](../features/active-user-dashboard.md)
 - [SSEステータス監視機能](../features/sse-monitoring.md)
-- [監査ログ機能](../features/audit-log.md)
-- [Dev/Prod 二重環境 Vite プロキシの実装](./dual-env-proxy.md)
+- [監査ログ機能仕様](../features/audit-log.md)
+- [システムメトリクスダッシュボード実装詳細](./system-metrics-dashboard.md)
+- [DBメトリクスダッシュボード実装詳細](./db-metrics.md)
+- [Dev/Prod 二重環境プロキシ実装](./dual-env-proxy.md)
 - [ADR-001: Vite 開発サーバープロキシの採用](../decisions/ADR-001-vite-proxy.md)
 - [ADR-002: エラーダッシュボードにおけるHTTPポーリング採用の理由](../../../yoyaku_mate_server/docs/decisions/ADR-002-use-polling-for-error-dashboard.md)
 - [ADR-006: SSE監視ダッシュボードにおける通信の分離およびHTTPポーリング方式採用の理由](../../../yoyaku_mate_server/docs/decisions/ADR-006-sse-monitoring-polling.md)

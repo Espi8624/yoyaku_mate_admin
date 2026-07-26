@@ -212,3 +212,17 @@ export const getSystemMetrics = async () => {
     throw error;
   }
 };
+
+/**
+ * DBメトリクスを取得します。（接続数、DBサイズ、スロークエリ）
+ * @returns {Promise<object>}
+ */
+export const getDbMetrics = async () => {
+  try {
+    const response = await apiClient.get('/metrics/db');
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Error fetching DB metrics:', error);
+    throw error;
+  }
+};
