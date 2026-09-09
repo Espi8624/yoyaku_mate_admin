@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Chip } from '@mui/material';
 import { updateStoreStatus, getLicenseImageUrl } from '../api/adminService'; // APIサービスのimport
+import { STORE_CATEGORY_LABELS } from '../constants/storeCategories';
+import { COLORS } from '../styles/colors';
 
 function StoreDetailModal({ store, onClose, onUpdate }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -88,6 +91,14 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
 
           {/* TODO: ここに店舗の全ての詳細情報を表示します。 */}
           <p><strong>店舗名:</strong> {store.store_name}</p>
+          <p>
+            <strong>業種:</strong>{' '}
+            <Chip
+              label={STORE_CATEGORY_LABELS[store.business_category] || '未設定'}
+              size="small"
+              sx={{ bgcolor: `${COLORS.info}22`, color: COLORS.info, border: `1px solid ${COLORS.info}`, fontWeight: 'bold' }}
+            />
+          </p>
           <p><strong>住所:</strong> {store.address}</p>
           <p><strong>電話番号:</strong> {store.phone}</p>
           <p><strong>申請日:</strong> {new Date(store.created_at).toLocaleString('ja-JP')}</p>

@@ -22,9 +22,11 @@ StoreApprovalPage
 │   ├── 승인 완료 (APPROVED)
 │   └── 거절 (REJECTED)
 │
-└── 점포 목록 테이블
+└── 점포 목록 테이블 (점포명·업종·신청일)
     └── [상세 보기 / 처리] 버튼 → StoreDetailModal 열림
 ```
+
+목록·상세 모달의 "업종"은 점포 등록 시 필수 선택되는 참고 정보(`store.business_category`)입니다. 값은 `RESTAURANT` / `CAFE_DESSERT` / `BEAUTY` / `RETAIL` / `OTHER` 고정 5종 (라벨 정의: [`src/constants/storeCategories.js`](../../src/constants/storeCategories.js)).
 
 ---
 

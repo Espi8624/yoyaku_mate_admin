@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { getStoresByStatus } from '../api/adminService';
 import StoreDetailModal from '../components/StoreDetailModal';
 import { COLORS } from '../styles/colors';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
+import { STORE_CATEGORY_LABELS } from '../constants/storeCategories';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Chip } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 function StoreApprovalPage() {
@@ -119,6 +120,7 @@ function StoreApprovalPage() {
               <TableHead sx={{ bgcolor: COLORS.border }}>
                 <TableRow>
                   <TableCell sx={{ color: COLORS.textPrimary, fontWeight: 'bold', fontSize: '0.95rem' }}>店舗名</TableCell>
+                  <TableCell sx={{ color: COLORS.textPrimary, fontWeight: 'bold', fontSize: '0.95rem' }}>業種</TableCell>
                   <TableCell sx={{ color: COLORS.textPrimary, fontWeight: 'bold', fontSize: '0.95rem' }}>申請日</TableCell>
                   <TableCell align="right" sx={{ color: COLORS.textPrimary, fontWeight: 'bold', fontSize: '0.95rem', pr: 4 }}>アクション</TableCell>
                 </TableRow>
@@ -135,6 +137,13 @@ function StoreApprovalPage() {
                       }}
                     >
                       <TableCell sx={{ color: COLORS.textPrimary, fontWeight: '500' }}>{store.store_name}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={STORE_CATEGORY_LABELS[store.business_category] || '未設定'}
+                          size="small"
+                          sx={{ bgcolor: `${COLORS.info}22`, color: COLORS.info, border: `1px solid ${COLORS.info}`, fontWeight: 'bold' }}
+                        />
+                      </TableCell>
                       <TableCell sx={{ color: COLORS.textSecondary }}>{new Date(store.created_at).toLocaleString('ja-JP')}</TableCell>
                       <TableCell align="right" sx={{ pr: 3 }}>
                         <Button 
@@ -160,7 +169,7 @@ function StoreApprovalPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={3} align="center" sx={{ py: 6, color: COLORS.textMuted }}>
+                    <TableCell colSpan={4} align="center" sx={{ py: 6, color: COLORS.textMuted }}>
                       データがありません。
                     </TableCell>
                   </TableRow>
