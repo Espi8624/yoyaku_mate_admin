@@ -30,8 +30,8 @@ function ErrorCountPage() {
 
   const fetchData = async () => {
     try {
-      const metricData = await getErrorMetrics();
-      const logData = await getErrorLogs();
+      // - 逐次awaitだと5秒ごとに2往復分の遅延+2回のsetStateが発生していたため並列化する
+      const [metricData, logData] = await Promise.all([getErrorMetrics(), getErrorLogs()]);
       setMetrics(metricData || { count_500: 0, count_400: 0, count_db: 0, count_sse: 0 });
       setLogs(logData || []);
     } catch (err) {

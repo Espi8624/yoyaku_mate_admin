@@ -1,8 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import { COLORS } from '../styles/colors';
 import { getActiveUserMetrics } from '../api/adminService';
+
+// - 3枚とも共通の枠スタイルのため、毎レンダー3個ずつ新規生成せず固定オブジェクトを再利用する
+const CARD_SX = {
+  bgcolor: COLORS.surfaceLight,
+  color: COLORS.textPrimary,
+  border: `1px solid ${COLORS.borderLight}`,
+  borderRadius: 2,
+};
 
 function ActiveUserPage() {
   const [metrics, setMetrics] = useState({
@@ -10,11 +18,15 @@ function ActiveUserPage() {
     daily_active_users: 0,
     monthly_active_users: 0,
   });
+  const metricsRef = useRef(metrics); // - setState要否判定用に直近値を同期参照する
 
   useEffect(() => {
     fetchData();
     // - 5秒周期でアクティブユーザーデータをポーリング更新
-    const interval = setInterval(fetchData, 5000);
+    // - タブが非表示の間はポーリングを止め、無駄なAPI呼び出し/再描画を避ける
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchData();
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -22,11 +34,21 @@ function ActiveUserPage() {
     try {
       const data = await getActiveUserMetrics();
       if (data) {
-        setMetrics({
+        const next = {
           current_active_users: data.current_active_users ?? 0,
           daily_active_users: data.daily_active_users ?? 0,
           monthly_active_users: data.monthly_active_users ?? 0,
-        });
+        };
+        const prev = metricsRef.current;
+        // - 前回と数値が同じならsetStateをスキップし、無駄な再描画を防ぐ
+        if (
+          prev.current_active_users !== next.current_active_users ||
+          prev.daily_active_users !== next.daily_active_users ||
+          prev.monthly_active_users !== next.monthly_active_users
+        ) {
+          metricsRef.current = next;
+          setMetrics(next);
+        }
       }
     } catch (err) {
       console.error("Failed to load active user metrics", err);
@@ -52,7 +74,7 @@ function ActiveUserPage() {
       
       <Grid container spacing={3}>
         <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.success, fontWeight: 'bold', mb: 1 }}>
                 CURRENT ACTIVE USERS
@@ -67,7 +89,7 @@ function ActiveUserPage() {
           </Card>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.primary, fontWeight: 'bold', mb: 1 }}>
                 DAILY ACTIVE USERS (DAU)
@@ -82,7 +104,7 @@ function ActiveUserPage() {
           </Card>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.warning, fontWeight: 'bold', mb: 1 }}>
                 MONTHLY ACTIVE USERS (MAU)

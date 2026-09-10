@@ -17,8 +17,8 @@ function RequestCountPage() {
 
   const fetchData = async () => {
     try {
-      const metricData = await getRequestMetrics();
-      const logData = await getRequestLogs();
+      // - 逐次awaitだと5秒ごとに2往復分の遅延+2回のsetStateが発生していたため並列化する
+      const [metricData, logData] = await Promise.all([getRequestMetrics(), getRequestLogs()]);
       setMetrics(metricData || { total_requests_24h: 0, success_rate: 100, peak_tps_1h: 0 });
       setLogs(logData || []);
     } catch (err) {

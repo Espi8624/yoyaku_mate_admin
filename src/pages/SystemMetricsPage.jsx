@@ -1,23 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography, Card, CardContent, Grid, LinearProgress, CircularProgress } from '@mui/material';
 import MemoryIcon from '@mui/icons-material/Memory';
 import { COLORS } from '../styles/colors';
 import { getSystemMetrics } from '../api/adminService';
 
+// - 3枚とも共通の枠スタイルのため、毎レンダー3個ずつ新規生成せず固定オブジェクトを再利用する
+const CARD_SX = {
+  bgcolor: COLORS.surfaceLight,
+  color: COLORS.textPrimary,
+  border: `1px solid ${COLORS.borderLight}`,
+  borderRadius: 2,
+};
+
 function SystemMetricsPage() {
   const [metrics, setMetrics] = useState({ cpuUsage: 0, memoryUsage: 0, diskSpace: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const metricsRef = useRef(metrics); // - setState要否判定用に直近値を同期参照する
 
   const fetchMetrics = async () => {
     try {
       const data = await getSystemMetrics();
       if (data) {
-        setMetrics({
+        const next = {
           cpuUsage: data.cpuUsage || 0,
           memoryUsage: data.memoryUsage || 0,
           diskSpace: data.diskSpace || 0,
-        });
+        };
+        const prev = metricsRef.current;
+        // - 前回と数値が同じならsetStateをスキップし、無駄な再描画を防ぐ
+        if (
+          prev.cpuUsage !== next.cpuUsage ||
+          prev.memoryUsage !== next.memoryUsage ||
+          prev.diskSpace !== next.diskSpace
+        ) {
+          metricsRef.current = next;
+          setMetrics(next);
+        }
       }
       setError(null);
     } catch (err) {
@@ -30,8 +49,11 @@ function SystemMetricsPage() {
 
   useEffect(() => {
     fetchMetrics(); // 初期データ取得
-    const interval = setInterval(fetchMetrics, 5000); // 5秒ごとにポーリング
-    
+    // - タブが非表示の間はポーリングを止め、無駄なAPI呼び出し/再描画を避ける
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchMetrics();
+    }, 5000); // 5秒ごとにポーリング
+
     return () => clearInterval(interval);
   }, []);
 
@@ -63,7 +85,7 @@ function SystemMetricsPage() {
       
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.primary, fontWeight: 'bold', mb: 1 }}>
                 CPU USAGE
@@ -76,7 +98,7 @@ function SystemMetricsPage() {
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.info, fontWeight: 'bold', mb: 1 }}>
                 MEMORY USAGE
@@ -89,7 +111,7 @@ function SystemMetricsPage() {
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.warning, fontWeight: 'bold', mb: 1 }}>
                 DISK SPACE

@@ -36,7 +36,11 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
     };
 
     fetchLicenseImage();
-  }, [store]); // store propが変更されるたびにこの効果を再実行します。
+  // - store全体ではなくlicense_image_urlの値だけを依存にする。
+  //   承認/拒否後の一覧再取得は毎回新しいstoreオブジェクト参照を作るため、
+  //   [store]のままだと同じ画像URLでも再取得が走り、モーダル再オープン時に
+  //   一瞬ローディング→画像差し替えのチラつきが発生していた。
+  }, [store?.license_image_url]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   const handleApprove = async () => {

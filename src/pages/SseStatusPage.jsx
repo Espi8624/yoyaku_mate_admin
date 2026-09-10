@@ -1,8 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Box, Typography, Card, CardContent, Grid, Chip } from '@mui/material';
 import SettingsInputAntennaIcon from '@mui/icons-material/SettingsInputAntenna';
 import { COLORS } from '../styles/colors';
 import { getSseMetrics } from '../api/adminService';
+
+// - 4枚とも共通の枠スタイルのため、毎レンダー4個ずつ新規生成せず固定オブジェクトを再利用する
+const CARD_SX = {
+  bgcolor: COLORS.surfaceLight,
+  color: COLORS.textPrimary,
+  border: `1px solid ${COLORS.borderLight}`,
+  borderRadius: 2,
+};
 
 function SseStatusPage() {
   const [metrics, setMetrics] = useState({
@@ -11,18 +19,29 @@ function SseStatusPage() {
     total_connections: 0,
     health: 'IDLE',
   });
+  const metricsSignatureRef = useRef(JSON.stringify(metrics)); // - setState要否判定用
 
   useEffect(() => {
     fetchData();
     // 5秒周期でSSEステータスをポーリングアップデート
-    const interval = setInterval(fetchData, 5000);
+    // - タブが非表示の間はポーリングを止め、無駄なAPI呼び出し/再描画を避ける
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchData();
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   const fetchData = async () => {
     try {
       const data = await getSseMetrics();
-      if (data) setMetrics(data);
+      if (data) {
+        // - 前回と内容が同じならsetStateをスキップし、無駄な再描画を防ぐ
+        const signature = JSON.stringify(data);
+        if (signature !== metricsSignatureRef.current) {
+          metricsSignatureRef.current = signature;
+          setMetrics(data);
+        }
+      }
     } catch (err) {
       console.error('Failed to load SSE metrics', err);
     }
@@ -66,7 +85,7 @@ function SseStatusPage() {
       <Grid container spacing={3}>
         {/* 全体接続数 */}
         <Grid item xs={12} md={6} lg={3}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.warning, fontWeight: 'bold', mb: 1 }}>
                 TOTAL CONNECTIONS
@@ -83,7 +102,7 @@ function SseStatusPage() {
 
         {/* 接続健全性状態 */}
         <Grid item xs={12} md={6} lg={3}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: isHealthy ? COLORS.success : COLORS.textMuted, fontWeight: 'bold', mb: 1 }}>
                 CONNECTION HEALTH
@@ -100,7 +119,7 @@ function SseStatusPage() {
 
         {/* 店舗待ちリストブローカー */}
         <Grid item xs={12} md={6} lg={3}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.primary, fontWeight: 'bold', mb: 1 }}>
                 STORE BROKER
@@ -120,7 +139,7 @@ function SseStatusPage() {
 
         {/* 個別待ち顧客ブローカー */}
         <Grid item xs={12} md={6} lg={3}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.success, fontWeight: 'bold', mb: 1 }}>
                 USER BROKER
