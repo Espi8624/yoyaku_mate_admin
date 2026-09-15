@@ -13,22 +13,22 @@ function AlertPage() {
         </Typography>
       </Box>
       <Typography variant="body1" sx={{ color: COLORS.textSecondary, mb: 4 }}>
-        サーバーの応答遅延、エラー急増などの障害発生時に、Slackやメールでの通知を行うための設定画面です。
+        サーバーの応答遅延、エラー急増などの障害発生時に、Slackへ通知を行う機能です。
       </Typography>
 
       <Alert severity="info" sx={{ mb: 4, bgcolor: 'rgba(2, 136, 209, 0.1)', color: '#0288d1', border: '1px solid rgba(2, 136, 209, 0.3)' }}>
-        この機能は現在開発中（TODO）です。将来のアップデートでSlack Webhookおよび外部メールAPI（Resend等）と連動する予定です。
+        サーバー側で下記の閾値監視・Slack通知は稼働中です。Webhook URLはサーバー環境変数(SLACK_WEBHOOK_URL)でのみ設定でき、この画面からの変更にはまだ対応していません。メール通知は未実装です。
       </Alert>
-      
+
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                Notification Webhook (Slack / Email)
+                Notification Webhook (Slack)
               </Typography>
               <Typography variant="body2" sx={{ color: COLORS.textMuted, mb: 3 }}>
-                ※ 連携先チャンネルや宛先の設定項目は、今後のアップデートで追加されます。
+                ※ Webhook URLの発行・設定はfly secrets(SLACK_WEBHOOK_URL)で行います。テスト送信ボタンは今後のアップデートで対応予定です。
               </Typography>
               <Button variant="contained" color="error" size="small" disabled>
                 テスト送信

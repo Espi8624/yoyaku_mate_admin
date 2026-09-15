@@ -1,6 +1,7 @@
 // src/api/adminService.js
 
 import axios from 'axios';
+import { getAdminToken, clearAdminToken } from '../auth/adminAuth';
 
 // 環境変数に指定されたAPI Base URL使用
 // ローカル開発サーバー駆動中(import.meta.env.DEVがtrue)の時はCORS回避のために'/api/admin'プロキシパスを使用します。
@@ -11,6 +12,45 @@ const API_BASE_URL = isDev ? '/api/admin' : (import.meta.env.VITE_API_BASE_URL |
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
 });
+
+// - 保存済みの管理者セッショントークンを全リクエストに自動付与
+apiClient.interceptors.request.use((config) => {
+  const token = getAdminToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// - トークンが無効/期限切れ(401)の場合はローカルの古いトークンを破棄し、
+//   ログイン画面への再遷移はコンポーネント側(RequireAdminAuth)に任せる
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      clearAdminToken();
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+/**
+ * 管理者共有パスワードでログインし、セッショントークンを取得します。
+ * @param {string} password
+ * @returns {Promise<string>} 発行されたセッショントークン
+ */
+export const adminLogin = async (password) => {
+  // - ログイン要求自体には(まだトークンが無いため)baseURLのみ利用し、専用クライアントは作らず直接叩く
+  const response = await apiClient.post('/auth/login', { password });
+  const token = response.data?.data?.token || response.data?.token;
+  if (!token) {
+    throw new Error('Login response did not include a token');
+  }
+  return token;
+};
 
 /**
  * 特定ステータスの店舗一覧を取得します。

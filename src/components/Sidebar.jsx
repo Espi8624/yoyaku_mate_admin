@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, Box } from '@mui/material';
 import { COLORS } from '../styles/colors';
+import { clearAdminToken } from '../auth/adminAuth';
 
 // Icons
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -14,6 +15,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import MemoryIcon from '@mui/icons-material/Memory';
 import StorageIcon from '@mui/icons-material/Storage';
 import WarningIcon from '@mui/icons-material/Warning';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 260;
 
@@ -33,6 +35,12 @@ const menuItems = [
 function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // - トークンを破棄してログイン画面へ戻す(サーバー側にセッション状態を持たないため、これだけで完結する)
+  const handleLogout = () => {
+    clearAdminToken();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <Drawer
@@ -100,6 +108,19 @@ function Sidebar() {
           );
         })}
       </List>
+      <Box sx={{ mt: 'auto' }}>
+        <Divider sx={{ bgcolor: COLORS.border }} />
+        <List sx={{ px: 1, py: 1.5 }}>
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleLogout} sx={{ borderRadius: 1.5, py: 1, px: 2 }}>
+              <ListItemIcon sx={{ color: 'rgba(255, 255, 255, 0.6)', minWidth: 40 }}>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="ログアウト" primaryTypographyProps={{ fontSize: '0.92rem', fontWeight: '500' }} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      </Box>
     </Drawer>
   );
 }
