@@ -10,6 +10,17 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
 
   const [licenseImageUrl, setLicenseImageUrl] = useState('');
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [isImageEnlarged, setIsImageEnlarged] = useState(false);
+
+  // - 拡大表示中にEscキーで閉じられるようにする
+  useEffect(() => {
+    if (!isImageEnlarged) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsImageEnlarged(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isImageEnlarged]);
 
   useEffect(() => {
     // 非同期関数を定義してすぐに呼び出します。
@@ -52,6 +63,7 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
       onUpdate(); // 親コンポーネントにリストを更新するよう通知
       onClose();  // モーダルを閉じる
     } catch (error) {
+      console.error('Failed to approve store', error);
       alert('承認処理に失敗しました。');
     } finally {
       setIsLoading(false);
@@ -71,6 +83,7 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
       onUpdate();
       onClose();
     } catch (error) {
+      console.error('Failed to reject store', error);
       alert('拒否処理に失敗しました。');
     } finally {
       setIsLoading(false);
@@ -115,7 +128,14 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
           ) : licenseImageUrl ? (
             // srcにはDBから直接来たファイルキーではなく、
             // APIで取得した一時URL(licenseImageUrlステート)を使用します。
-            <img src={licenseImageUrl} alt="営業許可証" className="license-image" />
+            // - クリックで拡大表示できるようにする(不鮮明な写真の判定に画像の細部確認が必要なため)
+            <img
+              src={licenseImageUrl}
+              alt="営業許可証"
+              className="license-image"
+              onClick={() => setIsImageEnlarged(true)}
+              style={{ cursor: 'zoom-in' }}
+            />
           ) : (
             <p>画像がありません。</p>
           )}
@@ -141,6 +161,15 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
           </button>
         </div>
       </div>
+
+      {/* - 営業許可証の拡大表示。オーバーレイまたは閉じるボタンのクリック、Escキーで閉じる */}
+      {isImageEnlarged && (
+        // - クリックが親のmodal-overlayまで伝播すると詳細モーダルごと閉じてしまうため、ここで止める
+        <div className="lightbox-overlay" onClick={(e) => { e.stopPropagation(); setIsImageEnlarged(false); }}>
+          <button className="lightbox-close-button" onClick={() => setIsImageEnlarged(false)}>&times;</button>
+          <img src={licenseImageUrl} alt="営業許可証(拡大)" className="lightbox-image" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
     </div>
   );
 }

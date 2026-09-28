@@ -4,8 +4,15 @@ import Sidebar, { drawerWidth } from './Sidebar';
 import { Box, Typography, Chip } from '@mui/material';
 import { COLORS } from '../styles/colors';
 
+// - Viteの--mode値ごとの表示ラベル・色を定義。未知のmodeはPRODUCTION DBとして安全側に倒す
+const ENV_BADGE = {
+  development: { label: 'LOCAL DB', color: 'warning' },
+  dev: { label: 'DEV DB', color: 'info' },
+  production: { label: 'PRODUCTION DB', color: 'error' },
+};
+
 function Layout() {
-  const isDev = import.meta.env.MODE === 'development';
+  const badge = ENV_BADGE[import.meta.env.MODE] || ENV_BADGE.production;
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: COLORS.background }}>
@@ -43,8 +50,8 @@ function Layout() {
               Server Environment:
             </Typography>
             <Chip
-              label={isDev ? 'DEVELOPMENT DB' : 'PRODUCTION DB'}
-              color={isDev ? 'warning' : 'error'}
+              label={badge.label}
+              color={badge.color}
               size="small"
               sx={{ fontWeight: 'bold', borderRadius: 1.5 }}
             />
