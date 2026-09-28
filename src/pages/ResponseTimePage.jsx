@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -47,17 +47,32 @@ const RANGE_OPTIONS = [
   { value: '24h', label: '直近24時間' },
 ];
 
+// - 全行共通で内容に依存しないため固定オブジェクトとして再利用
+const TABLE_ROW_SX = {
+  '&:last-child td, &:last-child th': { border: 0 },
+  borderBottom: `1px solid ${COLORS.border}`,
+  '&:hover': { bgcolor: 'rgba(255,255,255,0.03)' },
+};
+
 function ResponseTimePage() {
   const [range, setRange] = useState('1h');
   const [summary, setSummary] = useState({ avg_ms: 0, p95_ms: 0, p99_ms: 0, error_rate_pct: 0 });
   const [endpoints, setEndpoints] = useState([]);
   const [loading, setLoading] = useState(true);
+  const snapshotSignatureRef = useRef(''); // - setState要否判定用(summary+endpointsの直近シグネチャ)
 
   const fetchData = useCallback(async () => {
     try {
       const data = await getResponseTimeMetrics(range);
-      setSummary(data?.summary || { avg_ms: 0, p95_ms: 0, p99_ms: 0, error_rate_pct: 0 });
-      setEndpoints(data?.endpoints || []);
+      const nextSummary = data?.summary || { avg_ms: 0, p95_ms: 0, p99_ms: 0, error_rate_pct: 0 };
+      const nextEndpoints = data?.endpoints || [];
+      // - Top10件程度の小さいデータなので、前回と実質同一ならsetStateをスキップする
+      const signature = JSON.stringify({ nextSummary, nextEndpoints });
+      if (signature !== snapshotSignatureRef.current) {
+        snapshotSignatureRef.current = signature;
+        setSummary(nextSummary);
+        setEndpoints(nextEndpoints);
+      }
     } catch (err) {
       console.error('Failed to load response time metrics', err);
     } finally {
@@ -66,10 +81,14 @@ function ResponseTimePage() {
   }, [range]);
 
   // - 選択範囲変更時とマウント時に即時フェッチ、以降5秒ポーリング
+  // - タブが非表示の間はポーリングを止め、無駄なAPI呼び出し/再描画を避ける
   useEffect(() => {
     setLoading(true);
+    snapshotSignatureRef.current = ''; // - range変更時は強制的に新規データとして反映させる
     fetchData();
-    const interval = setInterval(fetchData, 5000);
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchData();
+    }, 5000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -241,14 +260,7 @@ function ResponseTimePage() {
           <TableBody>
             {endpoints.length > 0 ? (
               endpoints.map((ep, index) => (
-                <TableRow
-                  key={index}
-                  sx={{
-                    '&:last-child td, &:last-child th': { border: 0 },
-                    borderBottom: `1px solid ${COLORS.border}`,
-                    '&:hover': { bgcolor: 'rgba(255,255,255,0.03)' },
-                  }}
-                >
+                <TableRow key={index} sx={TABLE_ROW_SX}>
                   {/* HTTP メソッドバッジ */}
                   <TableCell>
                     <Chip

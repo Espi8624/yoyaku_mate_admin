@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -45,17 +45,70 @@ function formatTimestamp(ts) {
   return d.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
 }
 
+// - action/statusの組み合わせは種類が少ないため、Chip用sxオブジェクトを固定バリアントとして
+//   モジュールスコープで一度だけ生成し再利用する(以前は行ごと・5秒ポーリングのたびに毎回新規生成していた)
+const ACTION_CHIP_SX_CACHE = {};
+function getActionChipSx(action) {
+  if (!ACTION_CHIP_SX_CACHE[action]) {
+    const color = ACTION_COLORS[action];
+    ACTION_CHIP_SX_CACHE[action] = {
+      bgcolor: color ? `${color}22` : `${COLORS.textMuted}22`,
+      color: color || COLORS.textSecondary,
+      fontWeight: 'bold',
+      border: `1px solid ${color || COLORS.borderLight}`,
+    };
+  }
+  return ACTION_CHIP_SX_CACHE[action];
+}
+
+const STATUS_CHIP_SX = {
+  SUCCESS: {
+    bgcolor: `${COLORS.success}22`,
+    color: COLORS.success,
+    fontWeight: 'bold',
+    border: `1px solid ${COLORS.success}`,
+  },
+  OTHER: {
+    bgcolor: `${COLORS.error}22`,
+    color: COLORS.error,
+    fontWeight: 'bold',
+    border: `1px solid ${COLORS.error}`,
+  },
+};
+const getStatusChipSx = (status) => (status === 'SUCCESS' ? STATUS_CHIP_SX.SUCCESS : STATUS_CHIP_SX.OTHER);
+
+// - 全行共通で内容に依存しないため固定オブジェクトとして再利用
+const TABLE_ROW_SX = {
+  '&:last-child td': { border: 0 },
+  borderBottom: `1px solid ${COLORS.border}`,
+  '&:hover': { bgcolor: 'rgba(255,255,255,0.03)' },
+};
+
+// - 取得結果が前回と実質同一かどうかをid列で判定 (5秒ポーリングで変化がない場合のsetState/再描画を回避)
+function sameLogs(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if ((a[i].id ?? i) !== (b[i].id ?? i)) return false;
+  }
+  return true;
+}
+
 function AuditLogPage() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionFilter, setActionFilter] = useState('');
+  const logsRef = useRef(logs); // - setState要否判定用に直近のlogsを同期的に参照する
 
   // - 監査ログ API 取得（5秒自動更新）
   const fetchLogs = useCallback(async () => {
     try {
       const data = await getAuditLogs();
-      setLogs(data || []);
+      // - 前回と実質同一データならsetStateをスキップし、テーブル全行の無駄な再描画を防ぐ
+      if (!sameLogs(logsRef.current, data || [])) {
+        logsRef.current = data || [];
+        setLogs(data || []);
+      }
       setError(null);
     } catch (err) {
       console.error('Failed to fetch audit logs:', err);
@@ -71,11 +124,11 @@ function AuditLogPage() {
     return () => clearInterval(interval);
   }, [fetchLogs]);
 
-  // - クライアント側フィルタリング適用
-  const filteredLogs = logs.filter((log) => {
-    const matchAction = actionFilter ? log.action === actionFilter : true;
-    return matchAction;
-  });
+  // - クライアント側フィルタリング適用。logs/actionFilterが実際に変わった時のみ再計算する
+  const filteredLogs = useMemo(
+    () => logs.filter((log) => (actionFilter ? log.action === actionFilter : true)),
+    [logs, actionFilter]
+  );
 
   return (
     <Box sx={{ p: 4 }}>
@@ -169,45 +222,16 @@ function AuditLogPage() {
                 </TableRow>
               ) : (
                 filteredLogs.map((log, index) => (
-                  <TableRow
-                    key={log.id || index}
-                    sx={{
-                      '&:last-child td': { border: 0 },
-                      borderBottom: `1px solid ${COLORS.border}`,
-                      '&:hover': { bgcolor: 'rgba(255,255,255,0.03)' },
-                    }}
-                  >
+                  <TableRow key={log.id || index} sx={TABLE_ROW_SX}>
                     <TableCell sx={{ color: COLORS.textSecondary, fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
                       {formatTimestamp(log.timestamp)}
                     </TableCell>
                     <TableCell>
-                      <Chip
-                        label={log.action || '-'}
-                        size="small"
-                        sx={{
-                          bgcolor: ACTION_COLORS[log.action]
-                            ? `${ACTION_COLORS[log.action]}22`
-                            : `${COLORS.textMuted}22`,
-                          color: ACTION_COLORS[log.action] || COLORS.textSecondary,
-                          fontWeight: 'bold',
-                          border: `1px solid ${ACTION_COLORS[log.action] || COLORS.borderLight}`,
-                        }}
-                      />
+                      <Chip label={log.action || '-'} size="small" sx={getActionChipSx(log.action)} />
                     </TableCell>
                     <TableCell sx={{ color: COLORS.textPrimary }}>{log.target || '-'}</TableCell>
                     <TableCell>
-                      <Chip
-                        label={log.status || '-'}
-                        size="small"
-                        sx={{
-                          bgcolor: log.status === 'SUCCESS'
-                            ? `${COLORS.success}22`
-                            : `${COLORS.error}22`,
-                          color: log.status === 'SUCCESS' ? COLORS.success : COLORS.error,
-                          fontWeight: 'bold',
-                          border: `1px solid ${log.status === 'SUCCESS' ? COLORS.success : COLORS.error}`,
-                        }}
-                      />
+                      <Chip label={log.status || '-'} size="small" sx={getStatusChipSx(log.status)} />
                     </TableCell>
                     <TableCell sx={{ color: COLORS.textMuted, fontSize: '0.8rem', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {log.details || '-'}

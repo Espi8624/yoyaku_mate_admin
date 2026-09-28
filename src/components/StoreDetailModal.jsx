@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Chip } from '@mui/material';
 import { updateStoreStatus, getLicenseImageUrl } from '../api/adminService'; // APIサービスのimport
+import { STORE_CATEGORY_LABELS } from '../constants/storeCategories';
+import { COLORS } from '../styles/colors';
 
 function StoreDetailModal({ store, onClose, onUpdate }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -7,6 +10,17 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
 
   const [licenseImageUrl, setLicenseImageUrl] = useState('');
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [isImageEnlarged, setIsImageEnlarged] = useState(false);
+
+  // - 拡大表示中にEscキーで閉じられるようにする
+  useEffect(() => {
+    if (!isImageEnlarged) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsImageEnlarged(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isImageEnlarged]);
 
   useEffect(() => {
     // 非同期関数を定義してすぐに呼び出します。
@@ -33,7 +47,11 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
     };
 
     fetchLicenseImage();
-  }, [store]); // store propが変更されるたびにこの効果を再実行します。
+  // - store全体ではなくlicense_image_urlの値だけを依存にする。
+  //   承認/拒否後の一覧再取得は毎回新しいstoreオブジェクト参照を作るため、
+  //   [store]のままだと同じ画像URLでも再取得が走り、モーダル再オープン時に
+  //   一瞬ローディング→画像差し替えのチラつきが発生していた。
+  }, [store?.license_image_url]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   const handleApprove = async () => {
@@ -45,6 +63,7 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
       onUpdate(); // 親コンポーネントにリストを更新するよう通知
       onClose();  // モーダルを閉じる
     } catch (error) {
+      console.error('Failed to approve store', error);
       alert('承認処理に失敗しました。');
     } finally {
       setIsLoading(false);
@@ -64,6 +83,7 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
       onUpdate();
       onClose();
     } catch (error) {
+      console.error('Failed to reject store', error);
       alert('拒否処理に失敗しました。');
     } finally {
       setIsLoading(false);
@@ -88,6 +108,14 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
 
           {/* TODO: ここに店舗の全ての詳細情報を表示します。 */}
           <p><strong>店舗名:</strong> {store.store_name}</p>
+          <p>
+            <strong>業種:</strong>{' '}
+            <Chip
+              label={STORE_CATEGORY_LABELS[store.business_category] || '未設定'}
+              size="small"
+              sx={{ bgcolor: `${COLORS.info}22`, color: COLORS.info, border: `1px solid ${COLORS.info}`, fontWeight: 'bold' }}
+            />
+          </p>
           <p><strong>住所:</strong> {store.address}</p>
           <p><strong>電話番号:</strong> {store.phone}</p>
           <p><strong>申請日:</strong> {new Date(store.created_at).toLocaleString('ja-JP')}</p>
@@ -100,7 +128,14 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
           ) : licenseImageUrl ? (
             // srcにはDBから直接来たファイルキーではなく、
             // APIで取得した一時URL(licenseImageUrlステート)を使用します。
-            <img src={licenseImageUrl} alt="営業許可証" className="license-image" />
+            // - クリックで拡大表示できるようにする(不鮮明な写真の判定に画像の細部確認が必要なため)
+            <img
+              src={licenseImageUrl}
+              alt="営業許可証"
+              className="license-image"
+              onClick={() => setIsImageEnlarged(true)}
+              style={{ cursor: 'zoom-in' }}
+            />
           ) : (
             <p>画像がありません。</p>
           )}
@@ -126,6 +161,15 @@ function StoreDetailModal({ store, onClose, onUpdate }) {
           </button>
         </div>
       </div>
+
+      {/* - 営業許可証の拡大表示。オーバーレイまたは閉じるボタンのクリック、Escキーで閉じる */}
+      {isImageEnlarged && (
+        // - クリックが親のmodal-overlayまで伝播すると詳細モーダルごと閉じてしまうため、ここで止める
+        <div className="lightbox-overlay" onClick={(e) => { e.stopPropagation(); setIsImageEnlarged(false); }}>
+          <button className="lightbox-close-button" onClick={() => setIsImageEnlarged(false)}>&times;</button>
+          <img src={licenseImageUrl} alt="営業許可証(拡大)" className="lightbox-image" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
     </div>
   );
 }

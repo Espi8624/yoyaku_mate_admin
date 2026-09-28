@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Layout from './components/Layout';
+import RequireAdminAuth from './components/RequireAdminAuth';
 
 // Pages
+import LoginPage from './pages/LoginPage';
 import StoreApprovalPage from './pages/StoreApprovalPage';
 import ErrorCountPage from './pages/ErrorCountPage';
 import RequestCountPage from './pages/RequestCountPage';
@@ -55,8 +57,17 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          {/* 전체 대시보드 레이아웃을 감싼 중첩 라우트 */}
-          <Route element={<Layout />}>
+          {/* 인증 없이 접근 가능한 로그인 화면 */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* 전체 대시보드 레이아웃을 감싼 중첩 라우트 (관리자 세션 필요) */}
+          <Route
+            element={
+              <RequireAdminAuth>
+                <Layout />
+              </RequireAdminAuth>
+            }
+          >
             {/* 기본 경로는 점포 인증서 승인 페이지로 리다이렉트 */}
             <Route path="/" element={<Navigate to="/store-approval" replace />} />
             

@@ -22,9 +22,11 @@ StoreApprovalPage
 │   ├── 承認済み (APPROVED)
 │   └── 却下済み (REJECTED)
 │
-└── 店舗一覧テーブル
+└── 店舗一覧テーブル (店舗名・業種・申請日)
     └── [詳細表示・処理] ボタン → StoreDetailModal が開く
 ```
+
+一覧・詳細モーダルの「業種」は店舗登録時に必須選択される参考情報 (`store.business_category`)。値は `RESTAURANT` / `CAFE_DESSERT` / `BEAUTY` / `RETAIL` / `OTHER` の固定5種 (ラベル定義: [`src/constants/storeCategories.js`](../../src/constants/storeCategories.js))。
 
 ---
 

@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography, Card, CardContent, Grid, CircularProgress, Alert, Button } from '@mui/material';
 import StorageIcon from '@mui/icons-material/Storage';
 import { COLORS } from '../styles/colors';
 import { getDbMetrics } from '../api/adminService';
 import { useNavigate } from 'react-router-dom';
+
+// - 3枚とも共通の枠スタイルのため、毎レンダー3個ずつ新規生成せず固定オブジェクトを再利用する
+const CARD_SX = {
+  bgcolor: COLORS.surfaceLight,
+  color: COLORS.textPrimary,
+  border: `1px solid ${COLORS.borderLight}`,
+  borderRadius: 2,
+};
 
 function DbMetricsPage() {
   const navigate = useNavigate();
@@ -14,6 +22,7 @@ function DbMetricsPage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const metricsRef = useRef(metrics); // - setState要否判定用に直近値を同期参照する
 
   useEffect(() => {
     let isMounted = true;
@@ -21,8 +30,17 @@ function DbMetricsPage() {
     const fetchMetrics = async () => {
       try {
         const data = await getDbMetrics();
-        if (isMounted) {
-          setMetrics(data);
+        if (isMounted && data) {
+          const prev = metricsRef.current;
+          // - 前回と数値が同じならsetStateをスキップし、無駄な再描画を防ぐ
+          if (
+            prev.active_connections !== data.active_connections ||
+            prev.database_size_mb !== data.database_size_mb ||
+            prev.slow_queries_24h !== data.slow_queries_24h
+          ) {
+            metricsRef.current = data;
+            setMetrics(data);
+          }
           setError(null);
         }
       } catch (err) {
@@ -36,7 +54,10 @@ function DbMetricsPage() {
     };
 
     fetchMetrics();
-    const intervalId = setInterval(fetchMetrics, 5000);
+    // - タブが非表示の間はポーリングを止め、無駄なAPI呼び出し/再描画を避ける
+    const intervalId = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchMetrics();
+    }, 5000);
 
     return () => {
       isMounted = false;
@@ -72,7 +93,7 @@ function DbMetricsPage() {
       
       <Grid container spacing={3}>
         <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.success, fontWeight: 'bold', mb: 1 }}>
                 ACTIVE CONNECTIONS
@@ -87,7 +108,7 @@ function DbMetricsPage() {
           </Card>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.info, fontWeight: 'bold', mb: 1 }}>
                 DATABASE SIZE
@@ -102,7 +123,7 @@ function DbMetricsPage() {
           </Card>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ bgcolor: COLORS.surfaceLight, color: COLORS.textPrimary, border: `1px solid ${COLORS.borderLight}`, borderRadius: 2 }}>
+          <Card sx={CARD_SX}>
             <CardContent>
               <Typography variant="subtitle2" sx={{ color: COLORS.error, fontWeight: 'bold', mb: 1 }}>
                 SLOW QUERIES (24H)
