@@ -17,7 +17,7 @@
 | Router | React Router DOM 7 |
 | UI Framework | Material UI (MUI) v7, Emotion |
 | HTTP | Axios |
-| Deployment | Vercel |
+| Deployment | なし (ローカル専用。ホスティングしない) |
 
 ## Getting Started
 

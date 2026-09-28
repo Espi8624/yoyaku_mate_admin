@@ -11,7 +11,7 @@
 | Router | React Router DOM 7 |
 | UI Framework | Material UI (MUI) v7, Emotion |
 | HTTP | Axios |
-| デプロイ | Vercel |
+| デプロイ | なし (ローカル専用。ホスティングしない) |
 
 ---
 
@@ -56,7 +56,7 @@ Custom Hooks / イベントハンドラー
 adminService.js (Axios)
     │   ← 対象環境 (dev/prod) に応じて異なる baseURL を選択
     │
-    ▼  ローカル時: Vite Proxy経由 / 本番時: 直接呼び出し
+    ▼  Vite Proxy経由 (ローカル専用のため常にこの経路)
     │
 Backend Admin API (/api/admin/*)
     │
@@ -71,10 +71,12 @@ Backend Admin API (/api/admin/*)
 
 ローカル開発時は、Vite開発サーバーのプロキシ設定によって、CORSエラーを回避しながらDev環境とProd環境の両方に同時に接続します。
 
-| リクエストパス | ローカル実行時 (Vite Proxy) | 本番配備時 (Vercel) |
-|---------|-----------------|--------|
-| `/proxy-dev/*` | `VITE_PROXY_DEV_TARGET/api/admin/*` | 直接接続 |
-| `/proxy-prod/*` | `VITE_PROXY_PROD_TARGET/api/admin/*` | 直接接続 |
+| リクエストパス | 転送先 (Vite Proxy) |
+|---------|-----------------|
+| `/proxy-dev/*` | `VITE_PROXY_DEV_TARGET/api/admin/*` |
+| `/proxy-prod/*` | `VITE_PROXY_PROD_TARGET/api/admin/*` |
+
+- 管理画面はホスティングせずローカルでのみ使うため、プロキシを経由しない配備経路は存在しない
 
 → 詳細は [dual-env-proxy.md](./dual-env-proxy.md) を参照。
 

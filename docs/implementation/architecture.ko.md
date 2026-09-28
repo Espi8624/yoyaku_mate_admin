@@ -11,7 +11,7 @@
 | Router | React Router DOM 7 |
 | UI Framework | Material UI (MUI) v7, Emotion |
 | HTTP | Axios |
-| Deployment | Vercel |
+| Deployment | 없음 (로컬 전용, 호스팅하지 않음) |
 
 ---
 
@@ -56,7 +56,7 @@ Custom Hooks / Event Handler
 adminService.js (Axios Instance)
     │   ← 환경(dev/prod)에 따라 다른 baseURL 선택
     │
-    ▼  Vite Proxy (로컬) / 직접 요청 (Vercel)
+    ▼  Vite Proxy 경유 (로컬 전용이라 항상 이 경로)
     │
     ▼
 Backend Admin API (/api/admin/*)
@@ -72,10 +72,12 @@ Backend Admin API (/api/admin/*)
 
 로컬 개발 시 Vite 개발 서버의 프록시를 통해 CORS 없이 두 환경(Dev/Prod)에 동시 접근합니다.
 
-| 요청 경로 | 로컬 (Vite Proxy) | Vercel |
-|---------|-----------------|--------|
-| `/proxy-dev/*` | `VITE_PROXY_DEV_TARGET/api/admin/*` | 직접 설정 |
-| `/proxy-prod/*` | `VITE_PROXY_PROD_TARGET/api/admin/*` | 직접 설정 |
+| 요청 경로 | 전달 대상 (Vite Proxy) |
+|---------|-----------------|
+| `/proxy-dev/*` | `VITE_PROXY_DEV_TARGET/api/admin/*` |
+| `/proxy-prod/*` | `VITE_PROXY_PROD_TARGET/api/admin/*` |
+
+- 관리자 화면은 호스팅하지 않고 로컬에서만 쓰므로, 프록시를 거치지 않는 배포 경로는 존재하지 않는다
 
 → 상세: [dual-env-proxy.md](./dual-env-proxy.ko.md)
 
